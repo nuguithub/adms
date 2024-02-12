@@ -1,6 +1,6 @@
 <?php
+session_start();
 require_once 'connectDB.php';
-
 
 if (isset($_GET['id'])) {
     $wId = intval($_GET['id']);
@@ -8,16 +8,14 @@ if (isset($_GET['id'])) {
     $sql = "DELETE FROM workHistory WHERE work_id = $wId";
     
     if ($conn->query($sql) === TRUE) {
-        echo "<script>alert('Work experience deleted.'); 
-        setTimeout(function() { window.location.href = 'profile.php'; }, 1000);
-        </script>";
+        $_SESSION['workStatMess'] = ["Work experience deleted.", "success"];
                     
     } else {
-        echo "<script>alert('Failed to delete work experience.'); 
-       setTimeout(function() { window.location.href = 'profile.php'; }, 1000);
-        </script>";
+        $_SESSION['workStatMess'] = ["Failed to delete work experience.", "danger"];
+        
     }
 }
-
+header("Location: profile.php");
+exit();
 $conn->close();
 ?>

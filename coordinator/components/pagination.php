@@ -12,7 +12,7 @@
             echo '<nav aria-label="Page navigation">';
             echo '<ul class="pagination justify-content-center">';
             
-            $paginationUrl = "?page=";
+            $paginationUrl = "?course_code=$courseCode&page=";
             
             if ($current_page > 1) {
                 echo '<li class="page-item"><a class="page-link" id="page-first" href="' . $paginationUrl . '1">First</a></li>';

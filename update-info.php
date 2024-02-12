@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'connectDB.php';
 
 function updateAccount($id, $fname, $mname, $lname, $gender, $civilStat, $birthday)
@@ -49,19 +50,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editInfo"])) {
     $civilStat = $_POST['civilStat'];
 
     if (updateAccount($id, $fname, $mname, $lname, $gender, $civilStat, $birthday)) {
-        echo "<script>alert('Account updated successfully.');
-            setTimeout(function() {
-            window.location.href = 'profile.php';
-            }, 300); 
-        </script>";
+        $_SESSION['profStat'] = ["Account updated successfully.", "success"];
     } else {
-        echo "<script>alert('Failed to update account or invalid birthday.');
-            setTimeout(function() {
-            window.location.href = 'profile.php';
-            }, 300); 
-        </script>";
+        $_SESSION['profStat'] = ["Failed to update account or invalid birthday.", "danger"];
     }
 }
-
+header("Location: profile.php");
+exit();
 $conn->close();
 ?>

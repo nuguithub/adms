@@ -10,9 +10,8 @@ function check_user_role_function($requiredRole) {
 }
 
 if (!check_user_role_function('college_coordinator')) {
-    echo "<script>alert('Unauthorized Access.'); 
-    setTimeout(function() { window.location.href = '../../index.php'; }, 1000);
-    </script>";
+    $_SESSION['careerMess'] = ["Unauthorized Access.", "danger"];
+    header("Location: ../../index.php");
     exit;
 }
 
@@ -21,15 +20,14 @@ if (isset($_GET['career_id'])) {
 
     $deleteSql = "DELETE FROM careers WHERE career_id = $careerId";
     if ($conn->query($deleteSql) === TRUE) {
-            echo "<script>alert('Career deleted.'); 
-            setTimeout(function() { window.location.href = '../career.php'; }, 1000);
-            </script>";
+        $_SESSION['careerMess'] = ["Career deleted.", "success"];
+        header("Location: ../career.php");
+        exit;
     } else {
-        echo "<script>alert('Failed to delete Career.'); 
-        setTimeout(function() { window.location.href = '../career.php'; }, 1000);
-        </script>";
+        $_SESSION['careerMess'] = ["Failed to delete Career.", "danger"];
+        header("Location: ../career.php");
+        exit;
     }
-    
 }
 
 $conn->close();

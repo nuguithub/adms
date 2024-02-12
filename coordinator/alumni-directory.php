@@ -51,24 +51,33 @@
                                     data-bs-toggle="modal" data-bs-target="#importExcel"><i
                                         class="fal fa-upload me-1"></i>Import Excel</a>
 
+                                <a class="btn btn-success btn-sm px-md-4 ms-1 text-nowrap" href="#addAlumniModal"
+                                    data-bs-toggle="modal" data-bs-target="#addAlumniModal">Add Alumni</a>
+
+                                <?php include 'actions/addAlum.php';?>
                                 <?php include 'actions/importExcel.php';?>
                             </div>
                         </div>
 
                     </div>
-                    <?php if (!empty($message)) : ?>
-                    <?php if ($message === "A") : ?>
-                    <div class="alert alert-success alert-dismissible fade show" style="font-size: 14px;" role="alert">
-                        Alumni added successfully!
+
+
+                    <?php
+                        if (isset($_SESSION['updAlumniMess'])) {
+                            $mess1 = $_SESSION['updAlumniMess'][0];
+                            $alertType = $_SESSION['updAlumniMess'][1];
+                        ?>
+
+                    <div class="alert alert-<?php echo $alertType; ?> alert-dismissible fade show" role="alert">
+                        <?php echo $mess1; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <?php else : ?>
-                    <div class="alert alert-danger alert-dismissible fade show" style="font-size: 14px;" role="alert">
-                        <?php echo $message; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    <?php endif; ?>
-                    <?php endif; ?>
+
+                    <?php
+                    
+                    unset($_SESSION['updAlumniMess']); 
+                        }
+                        ?>
 
                     <?php
                     if (isset($_SESSION['mess'])) {
@@ -108,8 +117,7 @@
                         <table class="table table-responsive text-center table-striped">
                             <thead class="table-dark">
                                 <th>Student Number</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
+                                <th>Full Name</th>
                                 <th>Sex</th>
                                 <th>Age</th>
                                 <th>Current Work</th>
@@ -175,10 +183,7 @@
                                         <?php echo $value['student_number'];  ?>
                                     </td>
                                     <td>
-                                        <?php echo $value['fname'];  ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $value['lname'];  ?>
+                                        <?php echo $value['fname'] . ' ' . $value['mname'] . ' ' . $value['lname'];  ?>
                                     </td>
                                     <td><?php echo $value['gender']; ?></td>
                                     <td><?php 

@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require_once 'connectDB.php';
 
 function escapeString($conn, $value)
@@ -136,54 +136,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editWork"])) {
 
         if($workEnd != '' || $workEnd != NULL) {
             if (!isValidDateRange($workStart, $workEnd)) {
-                echo "<script>alert('Invalid date range. Work End date should be later than Work Start date and not ahead of the current date.');
-                        setTimeout(function() {
-                        window.location.href = 'profile.php';
-                        }, 300); </script>";
+                $_SESSION['workStatMess'] = ["Invalid date range. 'Work End' date should be later than 'Work Start' date and not ahead of the current date.", "danger"];
+        
             } else {
                 if (!empty($otherCareer)) {
                     $otherCareerName = getOtherCareerName($conn, $otherCareer, $coll_dept, $coll_course, $position);
             
                     if ($otherCareerName !== false) {
                         if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $otherCareerName, $empStat, $company, $workStart, $workEnd)) {
-                            echo "<script>alert('Account updated successfully.');
-                                setTimeout(function() {
-                                window.location.href = 'profile.php';
-                                }, 300); </script>";
+                            $_SESSION['workStatMess'] = ["Account updated successfully.", "success"];
                         } else {
-                            echo "<script>alert('Failed to update account.');
-                                setTimeout(function() {
-                                window.location.href = 'profile.php';
-                                }, 300); 
-                                </script>";
+                            $_SESSION['workStatMess'] = ["Failed to update account.", "danger"];
                         }
                     } else {
-                        echo "<script>alert('Failed to add other career.');
-                            setTimeout(function() {
-                            window.location.href = 'profile.php';
-                            }, 300); </script>";
+                        $_SESSION['workStatMess'] = ["Failed to add other career.", "danger"];
+            
                     }
                 } else {
                     // Check for the "Select Career" option
                     if ($position === "Select Career") {
-                        echo "<script>alert('Pick position.');
-                            setTimeout(function() {
-                            window.location.href = 'profile.php';
-                            }, 300); </script>";
+                        $_SESSION['workStatMess'] = ["Pick position.", "warning"];
                     } else {
                         // Check for blank workEnd to save as "Present"
                         $workEnd = empty($workEnd) ? 'Present' : $workEnd;
             
                         if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $position, $empStat, $company, $workStart, $workEnd)) {
-                            echo "<script>alert('Account updated successfully.');
-                                setTimeout(function() {
-                                window.location.href = 'profile.php';
-                                }, 300); </script>";
+                            $_SESSION['workStatMess'] = ["Account updated successfully.", "success"];
                         } else {
-                            echo "<script>alert('Failed to update account.');
-                                setTimeout(function() {
-                                window.location.href = 'profile.php';
-                                }, 300); </script>";
+                            $_SESSION['workStatMess'] = ["Failed to update account.", "danger"];
                         }
                     }
                 }
@@ -194,22 +174,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editWork"])) {
         
                 if ($otherCareerName !== false) {
                     if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $otherCareerName, $empStat, $company, $workStart, $workEnd)) {
-                        echo "<script>alert('Account updated successfully.');
-                            setTimeout(function() {
-                            window.location.href = 'profile.php';
-                            }, 300); </script>";
+                        $_SESSION['workStatMess'] = ["Account updated successfully.", "success"];
                     } else {
-                        echo "<script>alert('Failed to update account.');
-                            setTimeout(function() {
-                            window.location.href = 'profile.php';
-                            }, 300); 
-                            </script>";
+                        $_SESSION['workStatMess'] = ["Failed to update account.", "danger"];
                     }
                 } else {
-                    echo "<script>alert('Failed to add other career.');
-                        setTimeout(function() {
-                        window.location.href = 'profile.php';
-                        }, 300); </script>";
+                    $_SESSION['workStatMess'] = ["Failed to add other career.", "danger"];
                 }
             } else {
                 // Check for the "Select Career" option
@@ -223,24 +193,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editWork"])) {
                     $workEnd = empty($workEnd) ? 'Present' : $workEnd;
         
                     if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $position, $empStat, $company, $workStart, $workEnd)) {
-                        echo "<script>alert('Account updated successfully.');
-                            setTimeout(function() {
-                            window.location.href = 'profile.php';
-                            }, 300); </script>";
+                        $_SESSION['workStatMess'] = ["Account updated successfully.", "success"];
                     } else {
-                        echo "<script>alert('Failed to update account.');
-                            setTimeout(function() {
-                            window.location.href = 'profile.php';
-                            }, 300); </script>";
+                        $_SESSION['workStatMess'] = ["Failed to update account.", "danger"];
                     }
                 }
             }
         }
         
     } else {
-        echo "<script>alert('User not found.');</script>";
+        $_SESSION['workStatMess'] = ["User not found.", "danger"];
     }
 }
 
+header("Location: profile.php");
+exit();
 $conn->close();
 ?>

@@ -77,8 +77,7 @@
                         <button type="button" class="btn btn-info me-1" data-bs-toggle="modal"
                             data-bs-target="#addCareerModal" data-bs-whatever="@mdo"><i
                                 class="fas fa-briefcase me-2"></i>Add Career</button>
-                        <a href="javascript:history.back()" class="btn btn-danger me-3"><i
-                                class="fas fa-school me-2"></i>Courses</a>
+                        <a href="career.php" class="btn btn-danger me-3"><i class="fas fa-school me-2"></i>Courses</a>
                     </div>
                     <!-- Modal for Career -->
                     <div class="modal fade" id="addCareerModal" tabindex="-1" aria-labelledby="addCareerModalLabel"

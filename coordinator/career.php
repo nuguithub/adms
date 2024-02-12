@@ -90,7 +90,7 @@ include_once '../connectDB.php';
 </head>
 
 <body>
-    <main class="d-flex">
+    <main class="d-flex overflow-hidden">
 
         <?php include "components/sidebar.php"; ?>
 
@@ -98,7 +98,23 @@ include_once '../connectDB.php';
             <div class="row">
                 <div class="col-lg-12 my-5 px-5">
                     <h3 class="pb-3 fw-bold">Careers - Courses</h3>
-                    <div class="container-fluid">
+                    <?php
+                        if (isset($_SESSION['careerMess'])) {
+                            $message = $_SESSION['careerMess'][0];
+                            $alertType = $_SESSION['careerMess'][1];
+                            unset($_SESSION['careerMess']); 
+                        ?>
+
+                    <div class="alert alert-<?php echo $alertType; ?> alert-dismissible fade show" role="alert">
+                        <?php echo $message; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <?php
+                        }
+                        ?>
+
+                    <div class="">
                         <div class="row text-center my-3">
 
                             <?php

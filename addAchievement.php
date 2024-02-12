@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'connectDB.php';
 
 function updateAccount($id, $achievement, $date)
@@ -10,12 +11,9 @@ function updateAccount($id, $achievement, $date)
     $currentDate = new DateTime();
 
     if ($selectedDate > $currentDate) {
-        echo "<script>alert('Date cannot be in the future.');
-            setTimeout(function() {
-            window.location.href = 'profile.php';
-            }, 300); 
-        </script>";
-        return false;
+        $_SESSION['educStat'] = ["Date cannot be in the future.", "danger"];
+        header("Location: profile.php");
+        exit();
     }
 
     // Assuming $batchYear is the batch year fetched from the database
@@ -30,12 +28,9 @@ function updateAccount($id, $achievement, $date)
         $selectedYear = $selectedDate->format('Y');
 
         if ($selectedYear < $batchYear) {
-            echo "<script>alert('Date cannot be before the batch year.');
-                setTimeout(function() {
-                window.location.href = 'profile.php';
-                }, 300); 
-            </script>";
-            return false;
+            $_SESSION['educStat'] = ["Date cannot be before the batch year.", "danger"];
+            header("Location: profile.php");
+            exit();
         }
     }
 
@@ -47,9 +42,9 @@ function updateAccount($id, $achievement, $date)
     if (mysqli_query($conn, $query)) {
         return true; // Return true if the insertion was successful
     } else {
-        echo "<script>alert('Failed to add achievement.');
-        </script>";
-        return false;
+        $_SESSION['educStat'] = ["Failed to add achievement.", "danger"];
+        header("Location: profile.php");
+        exit();
     }
 
 }
@@ -60,13 +55,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["addAchievement"])) {
     $date = $_POST['date'];
 
     if (updateAccount($id, $achievement, $date)) {
-        echo "<script>alert('Achievement added successfully.');
-            setTimeout(function() {
-            window.location.href = 'profile.php';
-            }, 300); 
-        </script>";
+        $_SESSION['educStat'] = ["Achievement added successfully.", "success"];
     } 
 }
-
+header("Location: profile.php");
+exit();
 $conn->close();
 ?>

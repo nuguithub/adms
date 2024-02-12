@@ -13,7 +13,7 @@
             $allowedImageTypes = array('jpg', 'jpeg', 'png');
                     
             if (!in_array($imageFileType, $allowedImageTypes)) {
-                echo "<script>alert('Invalid file format. Choose only image files such as JPG, JPEG, and PNG files.');</script>";
+                $_SESSION['profileStat'] = ["Invalid file format. Choose only image files such as JPG, JPEG, and PNG files.", "danger"];
                 return false;
             }
         
@@ -48,7 +48,7 @@
                     $img_path = $upload_dir . $new_img_name;
         
                     if (!move_uploaded_file($img_tmp, $img_path)) {
-                        echo "<script>alert('Failed to upload image.');</script>";
+                        $_SESSION['profileStat'] = ["Failed to upload image.", "danger"];
                         return false;
                     }
         
@@ -63,7 +63,7 @@
                 $img_path = $upload_dir . $img_name;
         
                 if (!move_uploaded_file($img_tmp, $img_path)) {
-                    echo "<script>alert('Failed to upload image.');</script>";
+                    $_SESSION['profileStat'] = ["Failed to upload image.", "danger"];
                     return false;
                 }
         
@@ -83,16 +83,9 @@
         $img = $_FILES['image'];
 
         if (changeProfilePic($alumId, $img)) {
-            echo "<script>alert('Profile picture uploaded successfully.');
-            setTimeout(function() {
-                window.location.href = 'profile.php';
-            }, 1000); </script>";
-            exit();
+            $_SESSION['profileStat'] = ["Profile picture uploaded successfully.", "success"];
         } else {
-            echo "<script>alert('Can't upload image.');
-            setTimeout(function() {
-                window.location.href = 'profile.php';
-            }, 1000); </script>";
+            $_SESSION['profileStat'] = ["Can't upload image.", "danger"];
             
         }
     }

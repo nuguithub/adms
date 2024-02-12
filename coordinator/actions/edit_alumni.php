@@ -46,8 +46,19 @@
                         <label>First Name</label>
                     </div>
                     <div class="form-floating mb-1">
+                        <input type="text" class="form-control" placeholder="Quintos" name="mname"
+                            value="<?php echo $data['mname']; ?>">
+                        <label>Middle Name</label>
+                    </div>
+                    <div class="form-floating mb-1">
                         <input type="text" class="form-control" placeholder="Dela Cruz" name="lname"
                             value="<?php echo $data['lname']; ?>">
+                        <label>Last Name</label>
+                    </div>
+                    <div class="form-floating mb-1">
+
+                        <input type="date" class="form-control" name="birthday"
+                            value="<?php echo $data['birthday']; ?>">
                         <label>Last Name</label>
                     </div>
                     <div class="form-floating mb-1">

@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'connectDB.php';
 
 if (isset($_POST['saveWorkx'])) {
@@ -9,11 +10,9 @@ if (isset($_POST['saveWorkx'])) {
 
     if ($workEnd != '' && $workEnd != NULL) {
         if (strtotime($workStart) > strtotime($workEnd) || strtotime($workEnd) > strtotime(date('Y-m-d'))) {
-            echo "<script>alert('Invalid date range. Work End date should be later than Work Start date and not ahead of the current date.');
-                    setTimeout(function() {
-                    window.location.href = 'profile.php';
-                    }, 300); </script>";
-            exit; // Exit to prevent further execution
+            $_SESSION['workStatMess'] = ["Invalid date range. 'Work End' date should be later than 'Work Start' date and not ahead of the current date.", "danger"];
+            header("Location: profile.php");
+            exit();
         }
     } else {
         if (empty($workEnd)) {
@@ -29,25 +28,18 @@ if (isset($_POST['saveWorkx'])) {
         mysqli_stmt_bind_param($stmtUpdateWork, "sssi", $empStat, $workStart, $workEnd, $workId);
 
         if (mysqli_stmt_execute($stmtUpdateWork)) {
-            echo "<script>alert('Work information updated successfully.');
-                            setTimeout(function() {
-                            window.location.href = 'profile.php';
-                            }, 100); </script>";
+            $_SESSION['workStatMess'] = ["Work information updated successfully.", "success"];
+            
         } else {
-            echo "<script>alert('Error updating work information.');
-                    setTimeout(function() {
-                    window.location.href = 'profile.php';
-                    }, 300); </script>";
+            $_SESSION['workStatMess'] = ["Error updating work information.", "danger"];
         }
 
         mysqli_stmt_close($stmtUpdateWork);
     } else {
-        // Error preparing the statement
-        echo "<script>alert('Error preparing statement.');
-                setTimeout(function() {
-                window.location.href = 'profile.php';
-                }, 300); </script>";
+        $_SESSION['workStatMess'] = ["Error preparing statement.", "danger"];
     }
+    header("Location: profile.php");
+    exit();
 
     mysqli_close($conn);
 }

@@ -167,6 +167,25 @@ mysqli_close($conn);
                                     ?>
                                 </p>
                             </div>
+
+                            <?php
+                            if (isset($_SESSION['profileStat'])) {
+                                $mess1 = $_SESSION['profileStat'][0];
+                                $alertType = $_SESSION['profileStat'][1];
+                                unset($_SESSION['profileStat']); 
+                            ?>
+
+                            <div class="alert alert-<?php echo $alertType; ?> alert-dismissible fade show"
+                                style="font-size: .8rem;" role="alert">
+                                <?php echo $mess1; ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+
+                            <?php
+                            }
+                            ?>
+
                         </div>
                     </div>
                 </div>
@@ -183,6 +202,23 @@ mysqli_close($conn);
                             include 'editEduc.php';
                             include 'add-achievement.php';?>
                     </div>
+
+                    <?php
+                            if (isset($_SESSION['educStat'])) {
+                                $mess1 = $_SESSION['educStat'][0];
+                                $alertType = $_SESSION['educStat'][1];
+                                unset($_SESSION['educStat']); 
+                            ?>
+
+                    <div class="alert alert-<?php echo $alertType; ?> alert-dismissible fade show"
+                        style="font-size: .8rem;" role="alert">
+                        <?php echo $mess1; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <?php
+                            }
+                            ?>
 
                     <?php
                     $sql = "SELECT ap.*, d.dept_name, c.course_name
@@ -244,6 +280,22 @@ mysqli_close($conn);
                             data-bs-toggle="modal" style="font-size: .8em;">Edit</a>
                         <?php include 'editContact.php';?>
                     </div>
+                    <?php
+                            if (isset($_SESSION['contactStat'])) {
+                                $mess1 = $_SESSION['contactStat'][0];
+                                $alertType = $_SESSION['contactStat'][1];
+                                unset($_SESSION['contactStat']); 
+                            ?>
+
+                    <div class="alert alert-<?php echo $alertType; ?> alert-dismissible fade show"
+                        style="font-size: .8rem;" role="alert">
+                        <?php echo $mess1; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <?php
+                            }
+                            ?>
                     <div class="ms-2">
                         <p class="mb-0 fw-bold">Address:
                             <span class="text-secondary fw-normal">
@@ -289,6 +341,23 @@ mysqli_close($conn);
                     <!-- PERSONAL -->
                     <div class="card-body" id="personal">
                         <p class="mb-3 fw-bolder">PERSONAL</p>
+
+                        <?php
+                            if (isset($_SESSION['profStat'])) {
+                                $mess1 = $_SESSION['profStat'][0];
+                                $alertType = $_SESSION['profStat'][1];
+                                unset($_SESSION['profStat']); 
+                            ?>
+
+                        <div class="alert alert-<?php echo $alertType; ?> alert-dismissible fade show"
+                            style="font-size: .8rem;" role="alert">
+                            <?php echo $mess1; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <?php
+                            }
+                            ?>
 
                         <div class="ms-3">
                             <div class="row">
@@ -373,6 +442,24 @@ mysqli_close($conn);
                                 data-bs-toggle="modal" style="font-size: .8em;">Add</a>
                             <?php include 'add-work.php';?>
                         </div>
+
+                        <?php
+                        if (isset($_SESSION['workStatMess'])) {
+                            $mess1 = $_SESSION['workStatMess'][0];
+                            $alertType = $_SESSION['workStatMess'][1];
+                            unset($_SESSION['workStatMess']); 
+                        ?>
+
+                        <div class="alert alert-<?php echo $alertType; ?> alert-dismissible fade show"
+                            style="font-size: .8rem;" role="alert">
+                            <?php echo $mess1; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <?php
+                        }
+                        ?>
+
                         <div class="row">
                             <?php
                         $queryWorkHistory = "SELECT * FROM workHistory WHERE user_id = ? ORDER BY workEnd DESC";

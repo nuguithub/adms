@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'connectDB.php';
 
 function updateAccount($id, $address, $email, $contactNumber)
@@ -20,7 +21,6 @@ function updateAccount($id, $address, $email, $contactNumber)
                 INNER JOIN users AS u ON a.user_id = u.user_id
                 SET 
                 a.address_ = " . (!empty($address) ? "'$address'" : "NULL") . ",
-                a.email = " . (!empty($email) ? "'$email'" : "NULL") . ",
                 contact_no = " . (!empty($contactNumber) ? "'+63$contactNumber'" : "NULL") . ",
                 u.email = " . (!empty($email) ? "'$email'" : "NULL") . "
                 WHERE a.alumni_id = '$id' AND u.user_id = '$user_id'";
@@ -39,19 +39,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editContact"])) {
     $contactNumber = $_POST['contactNumber'];
 
     if (updateAccount($id, $address, $email, $contactNumber)) {
-        echo "<script>alert('Contact updated successfully.');
-            setTimeout(function() {
-            window.location.href = 'profile.php';
-            }, 300); 
-        </script>";
+        $_SESSION['contactStat'] = ["Contact updated successfully.", "success"];
     } else {
-        echo "<script>alert('Failed to update contacts.');
-            setTimeout(function() {
-            window.location.href = 'profile.php';
-            }, 300); 
-        </script>";
+        $_SESSION['contactStat'] = ["Failed to update contacts.", "danger"];
     }
 }
-
+header("Location: profile.php");
+exit();
 $conn->close();
 ?>
