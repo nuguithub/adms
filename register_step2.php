@@ -31,8 +31,10 @@ else {
 
             if ($userCountx > 0) {
                 echo "Email already exists. Please choose another email.";
+                unset($_SESSION['email']);
             } else {
                 // Close the first statement before preparing the second one
+                $_SESSION['email'] = $email;
                 $stmtx->close();
 
                 if (strlen($username) >= 6 && strlen($username) <= 20) {
@@ -50,11 +52,14 @@ else {
                     $stmt->store_result();
                     if ($stmt->num_rows > 0) {
                         $error_message = "Username already taken. Please choose a different one.";
+                        unset($_SESSION['username']);
                     }
                     else {
+                        $_SESSION['username'] = $username;
                         if ($password != $cpassword) {
                             $error_message = "Passwords don't match.";
                         } else {
+
                             if (strlen($password) >= 8) {
                                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
             
@@ -143,6 +148,12 @@ else {
     input:focus {
         box-shadow: 0 0 #3330 !important;
     }
+
+    .form-text,
+    #strength,
+    #cstrength {
+        font-size: .75rem;
+    }
     </style>
 </head>
 
@@ -172,15 +183,19 @@ else {
 
                                 <div class="mb-3">
                                     <label for="email" class="form-label fs-6 fw-semibold">Email</label>
-                                    <input type="email" class="form-control" name="email" required>
-                                    <div class="form-text text-secondary" style="font-size: 0.75rem;">
+                                    <input type="email" class="form-control" name="email" id="emailx"
+                                        value="<?php echo $_SESSION['email'] ?? ''; ?>" required>
+                                    <div class="form-text text-secondary">
                                         Please ensure you provide a valid email address for confirmation.
                                     </div>
+                                    <div class="form-text d-none" id="emess"></div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="username" class="form-label fs-6 fw-semibold">Username</label>
-                                    <input type="text" class="form-control" name="username" required>
+                                    <input type="text" class="form-control" name="username" id="uname"
+                                        value="<?php echo $_SESSION['username'] ?? ''; ?>" required>
+                                    <div class="form-text d-none" id="umess"></div>
                                 </div>
 
                                 <div class="mb-3">
@@ -196,21 +211,21 @@ else {
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="cpassw" class="form-label fs-6 fw-semibold">Confirm
-                                        Password</label>
+                                    <label for="cpassw" class="form-label fs-6 fw-semibold">Confirm Password</label>
                                     <div class="input-group">
                                         <input type="password" class="form-control z-0" id="cpassw-input" name="cpassw"
                                             required>
                                         <i class="fas fa-eye z-4 position-absolute end-0 pt-2 pe-3 mt-1" id="ceye"
                                             onclick="showPass('cpassw-input', 'ceye')"></i>
                                     </div>
-                                    <div class="form-text d-none" id="cmess">Password is <span id="cstrength"></span>
-                                    </div>
+                                    <div class="form-text d-none" id="cmess"></div>
                                 </div>
 
-                                <div class="text-center text-lg-end pt-3">
-                                    <button type="submit" id="submit" class="btn btn-primary px-5">Register</button>
+                                <div class="text-center text-lg-end">
+                                    <button type="submit" id="regButton" class="btn btn-primary px-5 mt-3"
+                                        disabled>Register</button>
                                 </div>
+
                             </form>
                         </div>
                     </div>
@@ -221,7 +236,7 @@ else {
 
     <script src="bootstrap/bs.js"></script>
     <script>
-    // for show/hide Password
+    // Function to show/hide Password
     function showPass(inputId, fasId) {
         const passwordInput = document.getElementById(inputId);
         const fas = document.getElementById(fasId);
@@ -232,20 +247,21 @@ else {
             fas.classList.remove("fa-eye");
             fas.classList.add("fa-eye-slash");
         } else {
-            passwordInput.type = "password"
+            passwordInput.type = "password";
             fas.style.color = "#ccc";
             fas.classList.remove("fa-eye-slash");
             fas.classList.add("fa-eye");
         }
     }
 
-    // for Password strength
+    // Function to update Password strength
     function updatePasswordStrength(input, message, strength) {
         if (input.value.length > 0) {
             message.classList.remove("d-none");
         } else {
             message.classList.add("d-none");
         }
+
         if (input.value.length < 4) {
             strength.innerHTML = "weak";
             input.style.borderColor = "#FF3333";
@@ -261,25 +277,151 @@ else {
         }
     }
 
-    var pass = document.getElementById("passw-input");
-    var msg = document.getElementById("mess");
-    var str = document.getElementById("strength");
+    // Event listeners for password and confirm password inputs
+    const pass = document.getElementById("passw-input");
+    const msg = document.getElementById("mess");
+    const str = document.getElementById("strength");
+
     pass.addEventListener('input', () => {
         updatePasswordStrength(pass, msg, str);
     });
 
-    var pass1 = document.getElementById("cpassw-input");
-    var msg1 = document.getElementById("cmess");
-    var str1 = document.getElementById("cstrength");
-    pass1.addEventListener('input', () => {
-        updatePasswordStrength(pass1, msg1, str1);
+    let emailCheck = false;
+    let userCheck = false;
+    let passCheck = false;
+
+    function updateEmail(input, messagex) {
+        if (messagex.innerHTML.trim().length > 0) {
+            messagex.classList.remove("d-none");
+        } else {
+            messagex.classList.add("d-none");
+        }
+
+        // Use a regular expression to check for a valid email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (emailRegex.test(input.value)) {
+            messagex.innerHTML = "";
+            input.style.borderColor = "#00CC66";
+            messagex.style.color = "#00CC66";
+            emailCheck = true;
+        } else {
+            messagex.innerHTML = "Invalid Email Format";
+            input.style.borderColor = "#FF3333";
+            messagex.style.color = "#FF3333";
+            emailCheck = false;
+        }
+    }
+
+    // Event listeners for email input
+    const emailInput = document.querySelector('[name="email"]');
+    const emailMessage = document.getElementById("emess");
+
+    emailInput.addEventListener('input', () => {
+        updateEmail(emailInput, emailMessage);
     });
 
 
-    // for activeLink
-    const registerLink = document.querySelector('.navbar-text .nav-item:last-child .nav-link');
-    registerLink.classList.add('text-white', 'fw-semibold');
-    window.removeEventListener('scroll', handleScroll);
+    function updateUser(input, messagex) {
+        if (messagex.innerHTML.trim().length > 0) {
+            messagex.classList.remove("d-none");
+        } else {
+            messagex.classList.add("d-none");
+        }
+
+        // Use a regular expression to check for only alphanumeric characters without spaces
+        const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+
+        if (input.value.length > 5 && alphanumericRegex.test(input.value)) {
+            messagex.innerHTML = "";
+            input.style.borderColor = "#00CC66";
+            messagex.style.color = "#00CC66";
+            userCheck = true;
+        } else {
+            messagex.innerHTML = "Weak Username. Avoid spaces and special characters.";
+            input.style.borderColor = "#FF3333";
+            messagex.style.color = "#FF3333";
+            userCheck = false;
+        }
+    }
+
+    // Event listeners for username input
+    const userx = document.getElementById("uname");
+    const messx = document.getElementById("umess");
+
+    userx.addEventListener('input', () => {
+        updateUser(userx, messx);
+    });
+
+
+    function checkPasswordMatch(pass, confirm, cmess) {
+        if (confirm.value.length > 0 && pass.value.length >= 8) {
+            if (pass.value !== confirm.value) {
+                cmess.classList.remove("d-none");
+                confirm.style.borderColor = "#FF3333";
+                cmess.style.color = "#FF3333";
+                cmess.innerHTML = "Passwords don't match.";
+                passCheck = false;
+            } else {
+                cmess.classList.add("d-none");
+                confirm.style.borderColor = "#00CC66";
+                passCheck = true;
+            }
+        } else {
+            confirm.style.borderColor = "";
+            cmess.innerHTML = "";
+            passCheck = false;
+        }
+    }
+
+    const pass1 = document.getElementById("passw-input");
+    const cpass = document.getElementById("cpassw-input");
+    const cmess = document.getElementById("cmess");
+
+    cpass.addEventListener('input', () => {
+        checkPasswordMatch(pass1, cpass, cmess);
+    });
+
+    pass1.addEventListener('input', () => {
+        checkPasswordMatch(pass1, cpass, cmess);
+    });
+
+    function validateAndToggleRegistrationButton() {
+        if (emailCheck === true && userCheck === true && passCheck === true) {
+            const regButton = document.getElementById("regButton");
+            regButton.disabled = false;
+            console.log("TANGINA");
+        } else {
+            console.log("GAGO");
+            regButton.disabled = true;
+        }
+    }
+
+    // Event listeners for email, username, and password inputs
+    const email = document.getElementById("emailx");
+    const usery = document.getElementById("uname");
+    const pass2 = document.getElementById("passw-input");
+    const cpasx = document.getElementById("cpassw-input");
+
+    emailInput.addEventListener('input', () => {
+        updateEmail(emailInput, document.getElementById("emess"));
+        validateAndToggleRegistrationButton();
+    });
+
+    usery.addEventListener('input', () => {
+        updateUser(userx, document.getElementById("umess"));
+        validateAndToggleRegistrationButton();
+    });
+
+    cpasx.addEventListener('input', () => {
+        checkPasswordMatch(pass1, cpass, document.getElementById("cmess"));
+        validateAndToggleRegistrationButton();
+    });
+
+    pass2.addEventListener('input', () => {
+        checkPasswordMatch(pass1, cpass, document.getElementById("cmess"));
+        validateAndToggleRegistrationButton();
+    });
     </script>
 
 </body>

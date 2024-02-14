@@ -61,46 +61,59 @@
 
                     </div>
 
-
                     <?php
                         if (isset($_SESSION['updAlumniMess'])) {
                             $mess1 = $_SESSION['updAlumniMess'][0];
                             $alertType = $_SESSION['updAlumniMess'][1];
-                        ?>
-
+                    ?>
                     <div class="alert alert-<?php echo $alertType; ?> alert-dismissible fade show" role="alert">
                         <?php echo $mess1; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-
                     <?php
-                    
-                    unset($_SESSION['updAlumniMess']); 
+                            unset($_SESSION['updAlumniMess']); 
                         }
-                        ?>
-
-                    <?php
-                    if (isset($_SESSION['mess'])) {
-                        $message = $_SESSION['mess'];
-                        if($_SESSION['mess'] === "A") {
-                            ?>
-                    <div class="alert alert-success alert-dismissible fade show" style="font-size: 14px;" role="alert">
-                        Alumni list imported successfully!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    <?php
-                        }
-                        else {
-                            ?>
-                    <div class="alert alert-info alert-dismissible fade show" style="font-size: 14px;" role="alert">
-                        <?php echo is_array($message) ? implode('<br>', $message) : $message; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    <?php
-                        }
-                        unset($_SESSION['mess']); 
-                    }
                     ?>
+
+                    <?php
+                        // Check for errors and display a confirmation modal if needed
+                        if (isset($_SESSION['mess']) && !empty($_SESSION['mess'])) {
+                            echo '<script>
+                                    $(document).ready(function(){
+                                        $("#errorModal").modal("show");
+                                    });
+                                </script>';
+                        }
+                    ?>
+
+                    <!-- Add this modal at the end of your importExcel.php file -->
+                    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="errorModalLabel">Error During Upload</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <?php
+                                        foreach ($_SESSION['mess'] as $message) {
+                                            echo "<p>$message</p>";
+                                        }
+                                        // Clear error messages from the session
+                                        unset($_SESSION['mess']);
+                                    ?>
+                                    <p>Do you wish to continue?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                    <button type="submit" class="btn btn-primary" form="excelForm"
+                                        name="confirmUpload">Yes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="table-responsive">
                         <form method="GET" action="">

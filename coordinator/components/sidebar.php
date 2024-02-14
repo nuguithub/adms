@@ -74,6 +74,13 @@ if ($_SESSION['role_'] === "college_coordinator") {
             <span class="tooltip">Career</span>
         </li>
         <li>
+            <a href="reports.php">
+                <i class="far fa-chart-bar"></i>
+                <span class="link_name">Reports</span>
+            </a>
+            <span class="tooltip">Reports</span>
+        </li>
+        <li>
             <a href="account-settings.php">
                 <i class="fal fa-user-circle"></i>
                 <span class="link_name">Account Settings</span>

@@ -32,37 +32,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['addAlumni'])) {
         $message = "All fields are required.";
     } else {
 
-            // Proceed with the database operations
-            $checkQuery = "SELECT student_number FROM alumni WHERE student_number = ?";
-            $checkStmt = $conn->prepare($checkQuery);
-            $checkStmt->bind_param("s", $student_number);
-            $checkStmt->execute();
-            $checkResult = $checkStmt->get_result();
+        // Proceed with the database operations
+        $checkQuery = "SELECT student_number FROM alumni WHERE student_number = ?";
+        $checkStmt = $conn->prepare($checkQuery);
+        $checkStmt->bind_param("s", $student_number);
+        $checkStmt->execute();
+        $checkResult = $checkStmt->get_result();
 
-            if ($checkResult->num_rows > 0) {
-                $_SESSION['updAlumniMess'] = ["A student with the same student number already exists.", "warning"];
-            } else {
+        if ($checkResult->num_rows > 0) {
+            $_SESSION['updAlumniMess'] = ["A student with the same student number already exists.", "warning"];
+        } else {
                 
-                $addAlumniQuery = "INSERT INTO alumni (student_number, fname, mname, lname, gender, civil_status, birthday, address_) 
-                                VALUES ('$student_number', '$fname', '$mname', '$lname', '$gender', '$civil_status', '$birthday', '$address')";
-                $alumniInsertResult = mysqli_query($conn, $addAlumniQuery);
+            $addAlumniQuery = "INSERT INTO alumni (student_number, fname, mname, lname, gender, civil_status, birthday, address_) 
+                            VALUES ('$student_number', '$fname', '$mname', '$lname', '$gender', '$civil_status', '$birthday', '$address')";
+            $alumniInsertResult = mysqli_query($conn, $addAlumniQuery);
                 
-                if ($alumniInsertResult) {
-                    $lastInsertedId = mysqli_insert_id($conn);
+            if ($alumniInsertResult) {
+            $lastInsertedId = mysqli_insert_id($conn);
                 
-                    $insertProgramQuery = "INSERT INTO alumni_program (alumni_id, coll_dept, coll_course, batch) 
-                                        VALUES ('$lastInsertedId', '$college', '$course', '$batch')";
-                    $programInsertResult = mysqli_query($conn, $insertProgramQuery);
+                $insertProgramQuery = "INSERT INTO alumni_program (alumni_id, coll_dept, coll_course, batch) 
+                                    VALUES ('$lastInsertedId', '$college', '$course', '$batch')";
+                $programInsertResult = mysqli_query($conn, $insertProgramQuery);
                 
-                    if ($programInsertResult) {
-                        $_SESSION['updAlumniMess'] = ["Alumni record added successfully.", "success"];
-                    } else {
-                        $_SESSION['updAlumniMess'] = ["Failed to add program information.", "danger"];
-                    }
+                if ($programInsertResult) {
+                    $_SESSION['updAlumniMess'] = ["Alumni record added successfully.", "success"];
                 } else {
-                    $_SESSION['updAlumniMess'] = ["Failed to add alumni record.", "danger"];
+                    $_SESSION['updAlumniMess'] = ["Failed to add program information.", "danger"];
                 }
+                
+            } else {
+                $_SESSION['updAlumniMess'] = ["Failed to add alumni record.", "danger"];
             }
+        }
         
     }
 }

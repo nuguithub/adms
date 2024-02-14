@@ -25,9 +25,8 @@ if (isset($_GET['user_id']) && !empty($_GET['user_id'])) {
     header("Location: emailApproved.php?email=" . urlencode($email));
     
 } else {
-    echo "<script>alert('Failed to update status');
-         setTimeout(function() {
-                window.location.href = '../alumni.php';
-        }, 200);</script>";
+    $_SESSION["approveStat"] = ["Failed to update status", "danger"];
+    header("Location: ../alumni.php");
+    exit();
 }
 ?>

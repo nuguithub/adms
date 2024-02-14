@@ -1,11 +1,11 @@
 <?php
+session_start();
 $email = isset($_GET['email']) ? urldecode($_GET['email']) : '';
 
 if(empty($email)) {
-    echo "<script>
-            alert('No email found.');
-            window.location.href = '../alumni.php;
-        </script>";
+    $_SESSION["approveStat"] = ["No email found.", "danger"];
+    header("Location: ../alumni.php");
+    exit();
 }
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -37,16 +37,14 @@ try {
 
     $mail->send();
     
-    echo "<script>alert('Status update successful');
-        setTimeout(function() {
-            window.location.href = '../alumni.php';
-        }, 200);</script>";
+    $_SESSION["approveStat"] = ["Status update successful", "success"];
+    header("Location: ../alumni.php");
+    exit();
 
 } catch (Exception $e) {
     $errorMessage = "Error sending email: " . $e->getMessage();
-    echo "<script>
-            alert('$errorMessage');
-            window.location.href = '../alumni.php';
-        </script>";
+    $_SESSION["approveStat"] = [$errorMessage, "danger"];
+    header("Location: ../alumni.php");
+    exit();
 }
 ?>

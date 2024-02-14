@@ -88,6 +88,7 @@ function validateLoginForm() {
     xhttp.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
             const response = JSON.parse(this.responseText);
+            errorMessage.classList.add("d-none");
 
             if (response.success) {
                 if (response.role_ === "alumni_admin") {
@@ -113,8 +114,10 @@ function validateLoginForm() {
                     }
                 }
             } else {
-                errorMessage.textContent = "Invalid username or password";
-                errorMessage.classList.remove("d-none");
+                setTimeout(function() {
+                    errorMessage.textContent = "Invalid username or password";
+                    errorMessage.classList.remove("d-none");
+                }, 100);
             }
         }
     };

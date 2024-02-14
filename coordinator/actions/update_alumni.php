@@ -26,16 +26,6 @@ function updateAlumniData($id, $student_number, $fname, $mname, $lname, $birthda
     }
 }
 
-function ageInvalid($birthday) {
-    global $conn;
-    
-    $currentDate = new DateTime();
-    $birthdate = new DateTime($birthday);
-    $age = $currentDate->diff($birthdate)->y;
-
-    return $age <= 16;
-}
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = $_POST['id'];
     $student_number = $_POST['student_number'];
@@ -49,11 +39,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $batch = $_POST['batch'];
 
     // Set the message before the conditional block
-    $_SESSION['updAlumniMess'] = ageInvalid($birthday)
-        ? ["Age should be more than 16.", "danger"]
-        : (updateAlumniData($id, $student_number, $fname, $mname, $lname, $birthday, $gender, $batch)
+    $_SESSION['updAlumniMess'] = updateAlumniData($id, $student_number, $fname, $mname, $lname, $birthday, $gender, $batch)
             ? ["{$student_number} updated successfully.", "success"]
-            : ["Failed to update {$student_number}.", "danger"]);
+            : ["Failed to update {$student_number}.", "danger"];
 
     header("Location: ../alumni-directory.php");
     exit();

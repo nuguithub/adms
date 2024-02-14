@@ -1,11 +1,11 @@
 <?php
+session_start();
 $email = isset($_GET['email']) ? urldecode($_GET['email']) : '';
 
 if(empty($email)) {
-    echo "<script>
-            alert('No email found.');
-            window.location.href = 'dashboard.php';
-        </script>";
+    $_SESSION['registerStat'] = ["No email found.", "info"];
+    header("Location: register-status.php");
+    exit();
 }
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -37,16 +37,15 @@ try {
 
     $mail->send();
     
-    echo "<script>
-            alert('Account created successfully, wait for the coordinator to approve your account.');
-            window.location.href = 'dashboard.php';
-        </script>";
+    $_SESSION['registerStat'] = ["Account created successfully, wait for the coordinator to approve your account.", "success"];
+    header("Location: register-status.php");
+    exit();
 
 } catch (Exception $e) {
     $errorMessage = "Error sending email: " . $e->getMessage();
-    echo "<script>
-            alert('$errorMessage');
-            window.location.href = 'dashboard.php';
-        </script>";
+
+    $_SESSION['registerStat'] = [$errorMessage, "success"];
+    header("Location: register-status.php");
+    exit();
 }
 ?>

@@ -36,6 +36,21 @@
                             Alumni Approval
                         </h2>
                     </div>
+                    <?php
+                    if (isset($_SESSION["approveStat"])) {
+                        // Retrieve the session message and status
+                        list($message, $status) = $_SESSION["approveStat"];
+                    
+                        // Display the message
+                        echo '<div class="alert alert-' . $status . ' alert-dismissible fade show" role="alert">' . $message .
+                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>';
+
+                    
+                        // Unset or clear the session variable to avoid displaying it again
+                        unset($_SESSION["approveStat"]);
+                    }
+                    ?>
                     <table class="table table-responsive text-center table-striped">
                         <thead class="table-dark text-nowrap">
                             <th>Image</th>
@@ -51,11 +66,12 @@
 
                                 $itemsPerPage = 10;
                                 $request = "SELECT a.*, ap.*
-            FROM alumni a
-            JOIN alumni_program ap ON a.alumni_id = ap.alumni_id
-            WHERE a.user_id IS NOT NULL 
-                AND ap.coll_dept = '$college'
-            GROUP BY a.alumni_id";
+                                            FROM alumni a
+                                            JOIN alumni_program ap ON a.alumni_id = ap.alumni_id
+                                            WHERE a.user_id IS NOT NULL 
+                                                AND ap.coll_dept = '$college'
+                                            GROUP BY a.alumni_id
+                                            ORDER BY a.approved";
          
 
                                 $result = $conn->query($request);
