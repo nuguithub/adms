@@ -1,8 +1,8 @@
 <?php
+session_start();
 require_once '../../connectDB.php';
 
 function check_user_role_function($requiredRole) {
-    session_start();
     if (isset($_SESSION['role_']) && $_SESSION['role_'] === $requiredRole) {
         return true;
     }
@@ -31,30 +31,27 @@ if (isset($_GET['news_id'])) {
                 $sql = "DELETE FROM news WHERE news_id = $newsId";
     
                 if ($conn->query($sql) === TRUE) {
-                    echo "<script>alert('News deleted.'); 
-                    setTimeout(function() { window.location.href = '../news.php'; }, 1000);
-                    </script>";
-                    
+                    $_SESSION['alert'] = ["News deleted.", "success"];
+                    header("Location: ../news.php");
+                    exit();
                 } else {
-                    echo "<script>alert('Failed to delete News.'); 
-                    setTimeout(function() { window.location.href = '../news.php'; }, 1000);
-                    </script>";
+                    $_SESSION['alert'] = ["Failed to delete news.", "danger"];
+                    header("Location: ../news.php");
+                    exit();
                 }
             }
                     
         } else {
-            echo "<script>alert('Failed to delete News.'); 
-            setTimeout(function() { window.location.href = '../news.php'; }, 1000);
-            </script>";
+            $_SESSION['alert'] = ["Failed to delete news.", "danger"];
+            header("Location: ../news.php");
+            exit();
             }
     } else {
-        echo "<script>alert('Failed to delete News.'); 
-        setTimeout(function() { window.location.href = '../news.php'; }, 1000);
-        </script>";
+        $_SESSION['alert'] = ["Failed to delete news.", "danger"];
+        header("Location: ../news.php");
+        exit();
     }
 }
-
-    
 
 $conn->close();
 ?>

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../../connectDB.php';
 
 function updateNews($id, $title, $img, $content, $created_at, $author)
@@ -38,8 +39,9 @@ function updateNews($id, $title, $img, $content, $created_at, $author)
             $img_path = $upload_dir . $new_img_name;
 
             if (!move_uploaded_file($img['tmp_name'], $img_path)) {
-                echo "<script>alert('Failed to upload image.');</script>";
-                return false;
+                $_SESSION['alert'] = ["Failed to upload image.", "danger"];
+                header("Location: ../news.php");
+                exit();
             }
 
             $sql = "UPDATE news SET img = '$new_img_name', title = '$title', content = '$content', created_at = '$created_at', author_name = '$author' WHERE news_id = '$id'";
@@ -48,8 +50,9 @@ function updateNews($id, $title, $img, $content, $created_at, $author)
             $sql = "UPDATE news SET title = '$title', content = '$content', created_at = '$created_at', author_name = '$author' WHERE news_id = '$id'";
         }
     } else {
-        echo "<script>alert('News record not found.');</script>";
-        return false;
+        $_SESSION['alert'] = ["News record not found.", "danger"];
+        header("Location: ../news.php");
+        exit();
     }
 
     if ($conn->query($sql) === TRUE) {
@@ -72,12 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $author = $_POST['author'];
 
     if (updateNews($id, $title, $img, $content, $created_at, $author)) {
-        echo "<script>alert('News updated successfully.');</script>";
-        header("refresh:1;url=../news.php");
+        $_SESSION['alert'] = ["News updated successfully.", "success"];
+        header("Location: ../news.php");
         exit();
     } else {
-        echo "<script>alert('Failed to update news.');</script>";
-        header("refresh:1;url=../news.php");
+        $_SESSION['alert'] = ["Failed to update news.", "danger"];
+        header("Location: ../news.php");
+        exit();
     }
 }
 

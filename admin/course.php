@@ -70,20 +70,15 @@ include '../connectDB.php';
                             </div>
                             <hr>
                             <?php
-                            if (isset($_SESSION['mess'])) {
-                                $succMess = $_SESSION['mess']; ?>
 
-                            <div class="alert alert-success py-2"><?php echo $succMess; ?></div>
+                            if (isset($_SESSION['alert'])) {
+                                $message = $_SESSION['alert'][0]; 
+                                $status = $_SESSION['alert'][1];  
 
-                            <?php
-                                unset($_SESSION['mess']);
-                            } else if (isset($_SESSION['messx'])) {
-                                $errorMess = $_SESSION['messx']; ?>
-
-                            <div class="alert alert-danger py-2"><?php echo $errorMess; ?></div>
-
-                            <?php
-                                unset($_SESSION['messx']);
+                                echo '<div class="alert alert-' . $status . ' alert-dismissible fade show" role="alert">' . $message . '
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>';
+                                unset($_SESSION['alert']);
                             }
                             ?>
 

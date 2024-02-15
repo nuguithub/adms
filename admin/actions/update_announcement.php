@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../../connectDB.php';
 
 function updateAnnouncementToDatabase($id, $title, $img, $content, $event_date, $event_time, $venue, $organizer)
@@ -40,8 +41,9 @@ function updateAnnouncementToDatabase($id, $title, $img, $content, $event_date, 
             $img_path = $upload_dir . $new_img_name;
 
             if (!move_uploaded_file($img['tmp_name'], $img_path)) {
-                echo "<script>alert('Failed to upload image.');</script>";
-                return false;
+                $_SESSION['alert'] = ["Failed to upload image.", "danger"];
+                header("Location: ../announcement.php");
+                exit();
             }
 
             $sql = "UPDATE announcements SET img = '$new_img_name', title = '$title', content = '$content', event_date = '$event_date', event_time = '$event_time', venue = '$venue', organizer = '$organizer' WHERE announcement_id = '$id'";
@@ -50,8 +52,9 @@ function updateAnnouncementToDatabase($id, $title, $img, $content, $event_date, 
             $sql = "UPDATE announcements SET title = '$title', content = '$content', event_date = '$event_date', event_time = '$event_time', venue = '$venue', organizer = '$organizer' WHERE announcement_id = '$id'";
         }
     } else {
-        echo "<script>alert('Announcement record not found.');</script>";
-        return false;
+        $_SESSION['alert'] = ["Announcement record not found.", "danger"];
+        header("Location: ../announcement.php");
+        exit();
     }
 
     if ($conn->query($sql) === TRUE) {
@@ -72,12 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $organizer = $_POST['organizer'];
 
     if (updateAnnouncementToDatabase($id, $title, $img, $content, $event_date, $event_time, $venue, $organizer)) {
-        echo "<script>alert('Announcement updated successfully.');</script>";
-        header("refresh:1;url=../announcement.php");
+        $_SESSION['alert'] = ["Announcement updated successfully.", "success"];
+        header("Location: ../announcement.php");
         exit();
     } else {
-        echo "<script>alert('Failed to update announcement.');</script>";
-        header("refresh:1;url=../announcement.php");
+        $_SESSION['alert'] = ["Failed to update Announcement.", "danger"];
+        header("Location: ../announcement.php");
+        exit();
     }
 }
 

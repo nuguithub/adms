@@ -1,8 +1,8 @@
 <?php
+session_start();
 require_once '../../connectDB.php';
 
 function check_user_role_function($requiredRole) {
-    session_start();
     if (isset($_SESSION['role_']) && $_SESSION['role_'] === $requiredRole) {
         return true;
     }
@@ -31,26 +31,25 @@ if (isset($_GET['announcement_id'])) {
                 $sql = "DELETE FROM announcements WHERE announcement_id = $annId";
     
                 if ($conn->query($sql) === TRUE) {
-                    echo "<script>alert('Announcement deleted.'); 
-                    setTimeout(function() { window.location.href = '../announcement.php'; }, 1000);
-                    </script>";
-                    
+                    $_SESSION['alert'] = ["Announcement deleted.", "success"];
+                    header("Location: ../announcement.php");
+                    exit();
                 } else {
-                    echo "<script>alert('Failed to delete Announcement.'); 
-                    setTimeout(function() { window.location.href = '../announcement.php'; }, 1000);
-                    </script>";
+                    $_SESSION['alert'] = ["Failed to delete Announcement.", "danger"];
+                    header("Location: ../announcement.php");
+                    exit();
                 }
             }
                     
         } else {
-            echo "<script>alert('Failed to delete Announcement.'); 
-            setTimeout(function() { window.location.href = '../announcement.php'; }, 1000);
-            </script>";
+            $_SESSION['alert'] = ["Failed to delete Announcement.", "danger"];
+            header("Location: ../announcement.php");
+            exit();
             }
     } else {
-        echo "<script>alert('Failed to delete Announcement.'); 
-        setTimeout(function() { window.location.href = '../announcement.php'; }, 1000);
-        </script>";
+        $_SESSION['alert'] = ["Failed to delete Announcement.", "danger"];
+        header("Location: ../announcement.php");
+        exit();
     }
 }
 

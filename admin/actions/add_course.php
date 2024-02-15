@@ -10,7 +10,7 @@
 
                     <div class="input-group mb-3">
                         <select class="form-select" name="department_id" required>
-                            <option selected>Department</option>
+                            <option value="" selected>Department</option>
                             <?php
                             include '../connectDB.php';
                             $queryDept = "SELECT * FROM departments";

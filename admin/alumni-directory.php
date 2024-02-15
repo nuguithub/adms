@@ -121,7 +121,7 @@
                                 <?php foreach ($result as $value): ?>
                                 <tr class="align-middle">
                                     <td>
-                                        <?php echo $value['student_number'];  ?>
+                                        <?php echo "<a href='profile.php?student_number=" . $value['student_number'] . "'>" . $value['student_number'] . "</a>";?>
                                     </td>
                                     <td>
                                         <?php echo $value['fname'];  ?>

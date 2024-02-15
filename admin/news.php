@@ -50,6 +50,18 @@
                     <div class="card-body overflow-auto" style="max-height: 90vh;">
                         <div class="mt-5 mx-5">
                             <h2 class="fw-bolder mb-3">News</h2>
+                            <?php
+
+                            if (isset($_SESSION['alert'])) {
+                                $message = $_SESSION['alert'][0]; 
+                                $status = $_SESSION['alert'][1];  
+
+                                echo '<div class="alert alert-' . $status . ' alert-dismissible fade show" role="alert">' . $message . '
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>';
+                                unset($_SESSION['alert']);
+                            }
+                            ?>
                             <div class="text-end">
                                 <button type="button" class="btn btn-success px-3" data-bs-toggle="modal"
                                     data-bs-target="#addNewsModal">Add News</button>

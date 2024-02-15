@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../../connectDB.php';
 
 function updateDepartments($id, $dept_code, $dept_name)
@@ -24,12 +25,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $dept_name = $_POST['dept_name'];
 
     if (updateDepartments($id, $dept_code, $dept_name)) {
-        echo "<script>alert('Departments updated successfully.');</script>";
-        header("refresh:1;url=../department.php");
+        $_SESSION['alert'] = ["Departments updated successfully.", "success"];
+        header("Location: ../department.php");
         exit();
     } else {
-        echo "<script>alert('Failed to update departments.');</script>";
-        header("refresh:1;url=../department.php");
+        $_SESSION['alert'] = ["Failed to update departments.", "danger"];
+        header("Location: ../department.php");
+        exit();
     }
 }
 

@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once '../../connectDB.php';
 
 function addAnnouncementToDatabase($title, $img, $content, $event_date, $event_time, $venue, $organizer)
@@ -21,8 +23,9 @@ function addAnnouncementToDatabase($title, $img, $content, $event_date, $event_t
         $imageFileType = strtolower(pathinfo($img_name, PATHINFO_EXTENSION));
         $allowedImageTypes = array('jpg', 'jpeg', 'png');
         if (!in_array($imageFileType, $allowedImageTypes)) {
-            echo "<script>alert('Invalid file format. Only JPG, JPEG, and PNG files are allowed.');</script>";
-            return false;
+            $_SESSION['alert'] = ["Invalid file format. Only JPG, JPEG, and PNG files are allowed.", "danger"];
+            header("Location: ../announcement.php");
+            exit();
         }
 
         // Rename the file if it already exists
@@ -39,8 +42,9 @@ function addAnnouncementToDatabase($title, $img, $content, $event_date, $event_t
         $img_name = $new_img_name;
 
         if (!move_uploaded_file($img_tmp, $img_path)) {
-            echo "<script>alert('Failed to upload image.');</script>";
-            return false;
+            $_SESSION['alert'] = ["Failed to upload image.", "danger"];
+            header("Location: ../announcement.php");
+            exit();
         }
     }
 
@@ -63,12 +67,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $organizer = $_POST['organizer'];
 
     if (addAnnouncementToDatabase($title, $img, $content, $event_date, $event_time, $venue, $organizer)) {
-        echo "<script>alert('Announcement added successfully.');</script>";
-        header("refresh:1;url=../announcement.php");
+        $_SESSION['alert'] = ["Announcement added successfully.", "success"];
+        header("Location: ../announcement.php");
         exit();
     } else {
-        echo "<script>alert('Failed to add Announcement.');</script>";
-        header("refresh:1;url=../announcement.php");
+        $_SESSION['alert'] = ["Failed to add Announcement.", "danger"];
+        header("Location: ../announcement.php");
+        exit();
     }
 }
 

@@ -1,8 +1,8 @@
 <?php
+session_start();
 require_once '../../connectDB.php';
 
 function check_user_role_function($requiredRole) {
-    session_start();
     if (isset($_SESSION['role_']) && $_SESSION['role_'] === $requiredRole) {
         return true;
     }
@@ -21,13 +21,13 @@ if (isset($_GET['dept_id'])) {
 
     $sql = "DELETE FROM departments WHERE dept_id = $deptId";
     if ($conn->query($sql) === TRUE) {
-        echo "<script>alert('Departments deleted.'); 
-        setTimeout(function() { window.location.href = '../department.php'; }, 1000);
-        </script>";
+        $_SESSION['alert'] = ["Department deleted.", "success"];
+        header("Location: ../department.php");
+        exit();
     } else {
-        echo "<script>alert('Failed to delete department.'); 
-        setTimeout(function() { window.location.href = '../department.php'; }, 1000);
-        </script>";
+        $_SESSION['alert'] = ["Failed to delete department.", "danger"];
+        header("Location: ../department.php");
+        exit();
     }
 }
 

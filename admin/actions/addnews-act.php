@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../../connectDB.php';
 
 function addNewsToDatabase($title, $img, $content, $author_name)
@@ -19,8 +20,9 @@ function addNewsToDatabase($title, $img, $content, $author_name)
     
         // Check if the file format is valid
         if (!in_array($imageFileType, $allowedImageTypes)) {
-            echo "<script>alert('Invalid file format. Only JPG, JPEG, and PNG files are allowed.');</script>";
-            return false;
+            $_SESSION['alert'] = ["Invalid file format. Only JPG, JPEG, and PNG files are allowed.", "danger"];
+            header("Location: ../news.php");
+            exit();
         }
     
         // Rename the file if it already exists
@@ -37,8 +39,9 @@ function addNewsToDatabase($title, $img, $content, $author_name)
         $img_name = $new_img_name;
     
         if (!move_uploaded_file($img_tmp, $img_path)) {
-            echo "<script>alert('Failed to upload image.');</script>";
-            return false;
+            $_SESSION['alert'] = ["Failed to update news.", "danger"];
+            header("Location: ../news.php");
+            exit();
         }
     }
     
@@ -58,12 +61,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $author_name = $_POST['author_name'];
 
     if (addNewsToDatabase($title, $img, $content, $author_name)) {
-        echo "<script>alert('News added successfully.');</script>";
-        header("refresh:1;url=../news.php");
+        $_SESSION['alert'] = ["News added successfully.", "success"];
+        header("Location: ../news.php");
         exit();
     } else {
-        echo "<script>alert('Failed to add News.');</script>";
-        header("refresh:1;url=../news.php");
+        $_SESSION['alert'] = ["Failed to add news.", "danger"];
+        header("Location: ../news.php");
+        exit();
     }
 }
 

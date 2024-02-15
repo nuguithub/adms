@@ -9,6 +9,11 @@ function addDept($conn, $dept_code, $dept_name) {
 
     $dept_code = strtoupper($dept_code);
     $dept_name = ucwords(strtolower($dept_name));
+    $small_words = array("of", "and", "in", "at");
+
+    foreach ($small_words as $small_word) {
+        $dept_name = preg_replace("/\b" . $small_word . "\b/i", strtolower($small_word), $dept_name);
+    }
     
     $dept_code = mysqli_real_escape_string($conn, $dept_code);
     $dept_name = mysqli_real_escape_string($conn, $dept_name);
@@ -21,16 +26,16 @@ function addDept($conn, $dept_code, $dept_name) {
         $count = $row['count'];
         
         if ($count > 0) {
-            $_SESSION['messx'] = "This department already exists.";
+            $_SESSION['alert'] = ["This department already exists.", "danger"];
             return false;
         } else {
             $insertQuery = "INSERT INTO departments (dept_code, dept_name) VALUES ('$dept_code', '$dept_name')";
             
             if ($conn->query($insertQuery) === TRUE) {
-                $_SESSION['mess'] = "Department successfully added.";
+                $_SESSION['alert'] = ["Department successfully added.", "success"];
                 return true;
             } else {
-                $_SESSION['messx'] = "Failed to add the department. Please try again later.";
+                $_SESSION['alert'] = ["Failed to add the department. Please try again later.", "danger"];
                 return false; 
             }
         }

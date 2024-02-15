@@ -9,6 +9,12 @@ function addCourse($conn, $department_id, $course_code, $course_name) {
 
     $course_code = strtoupper($course_code);
     $course_name = ucwords(strtolower($course_name));
+    $small_words = array("of", "and", "in", "at");
+
+    foreach ($small_words as $small_word) {
+        $course_name = preg_replace("/\b" . $small_word . "\b/i", strtolower($small_word), $course_name);
+    }
+    
     
     $dept_id = mysqli_real_escape_string($conn, $department_id);
     $c_code = mysqli_real_escape_string($conn, $course_code);
@@ -23,16 +29,16 @@ function addCourse($conn, $department_id, $course_code, $course_name) {
         $count = $row['count'];
         
         if ($count > 0) {
-            $_SESSION['messx'] = "This course already exists.";
+            $_SESSION['alert'] = ["This course already exists.", "danger"];
             return false;
         } else {
             $sql = "INSERT INTO courses (department_id, course_code, course_name) VALUES ('$dept_id', '$c_code', '$c_name')";
     
             if ($conn->query($sql) === TRUE) {
-                $_SESSION['mess'] = "Course successfully added.";
+                $_SESSION['alert'] = ["Course successfully added.", "success"];
                 return true;
             } else {
-                $_SESSION['messx'] = "Failed to add the course. Please try again later.";
+                $_SESSION['alert'] = ["Failed to add the course. Please try again later.", "danger"];
                 return false;
             }
         }
