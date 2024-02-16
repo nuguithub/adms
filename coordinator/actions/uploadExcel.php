@@ -8,7 +8,19 @@ include_once '../../connectDB.php';
 require_once '../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
-$worksheetArr = []; // Initialize the variable
+// Count the total number of rows in the Excel file
+function countExcelRows($filePath) {
+    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+    $spreadsheet = $reader->load($filePath);
+    $worksheet = $spreadsheet->getActiveSheet();
+    $worksheetArr = $worksheet->toArray();
+
+    // Subtracting 1 to exclude the header row
+    return count($worksheetArr) - 1;
+}
+
+$_SESSION['successData'] = []; // Initialize the variable for successful data
+$_SESSION['failedData'] = []; // Initialize the variable for failed data
 
 // Function to process Excel data
 function processExcelData($row, $conn, $college) {
@@ -31,11 +43,11 @@ function processExcelData($row, $conn, $college) {
 
     if (!empty($student_number)) {
         if (mysqli_num_rows($duplicateResult) > 0) {
-            $_SESSION['mess'][] = "Student number $student_number already exists. Duplicate account on the report.";
+            $_SESSION['failedData'][] = "$student_number already exists. Duplicate account.";
             return;
         }
     } else {
-        $_SESSION['mess'][] = "Student number is empty.";
+        $_SESSION['failedData'][] = "Student number is empty.";
         return;
     }
     
@@ -45,14 +57,14 @@ function processExcelData($row, $conn, $college) {
 
     if (!empty($coll_dept)) {
         if ($coll_dept != $college) {
-            $_SESSION['mess'][] = "Access restricted. Importing data limited to $college alumni only.";
+            $_SESSION['failedData'][] = "Access restricted. Importing data limited to $college alumni only.";
             return;
         } else if (mysqli_num_rows($deptResult) == 0) {
-            $_SESSION['mess'][] = "Department $coll_dept is not existing.";
+            $_SESSION['failedData'][] = "Department $coll_dept is not existing.";
             return;
         }
     } else {
-        $_SESSION['mess'][] = "Department is empty.";
+        $_SESSION['failedData'][] = "Department is empty.";
         return;
     }
 
@@ -62,28 +74,28 @@ function processExcelData($row, $conn, $college) {
 
     if(!empty($coll_course)) {
         if (mysqli_num_rows($courseResult) == 0) {
-            $_SESSION['mess'][] = "Course $coll_course is not existing.";
+            $_SESSION['failedData'][] = "Course $coll_course is not existing.";
             return;
         }
     } else {
-        $_SESSION['mess'][] = "Course is empty.";
+        $_SESSION['failedData'][] = "Course is empty.";
         return;
     }
 
-    $insertQuery = "INSERT INTO alumni (student_number, fname, mname, lname, gender, civil_status, birthday, address_) 
-                VALUES ('$student_number', '$first_name', '$middle_name', '$last_name', '$gender', '$civil_status', '$birthday', '$address')";
-    mysqli_query($conn, $insertQuery);
-
-    // Get the last inserted alumni_id
-    $lastInsertedId = mysqli_insert_id($conn);
-
-    // Insert data into alumni_program table
-    $insertProgramQuery = "INSERT INTO alumni_program (alumni_id, coll_dept, coll_course, batch) 
-                            VALUES ('$lastInsertedId', '$coll_dept', '$coll_course', '$batch')";
-    mysqli_query($conn, $insertProgramQuery);
-
-
-    $_SESSION['mess'][] = "$student_number added successfully.";
+    // Save actual data for successful records
+    $_SESSION['successData'][] = [
+        'student_number' => $student_number,
+        'first_name' => $first_name,
+        'middle_name' => $middle_name,
+        'last_name' => $last_name,
+        'gender' => $gender,
+        'civil_status' => $civil_status,
+        'birthday' => $birthday,
+        'address' => $address,
+        'coll_dept' => $coll_dept,
+        'coll_course' => $coll_course,
+        'batch' => $batch,
+    ];
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['importExcel'])) {
@@ -96,6 +108,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['importExcel'])) {
         'application/vnd.ms-excel',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ];
+
+
+    $excelRowCount = countExcelRows($_FILES['excelFile']['tmp_name']);
+
+            if ($excelRowCount > 100) {
+                $_SESSION['updAlumniMess'] = ["Excel file contains more than 100 rows. Importing limited to 100 rows.", "danger"];
+                header("Location: ../alumni-directory.php");
+                exit(); // Ensure script termination after redirection
+            }
 
     if (!empty($_FILES['excelFile']['name']) && in_array($_FILES['excelFile']['type'], $validExcelMimes)) {
         if (is_uploaded_file($_FILES['excelFile']['tmp_name'])) {
@@ -111,17 +132,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['importExcel'])) {
                 processExcelData($row, $conn, $college);
             }
         } else {
-            $_SESSION['mess'][] = "Importing alumni data failed.";
+            $_SESSION['updAlumniMess'] = ["Importing alumni data failed.", "danger"];
         }
     } else {
-        $_SESSION['mess'][] = "Invalid file format. Please upload an Excel file.";
+        $_SESSION['updAlumniMess'] = ["Invalid file format. Please upload an Excel file.", "danger"];
     }
 
-    // Redirect to alumni-directory.php
+    // Redirect to error modal
     header("Location: ../alumni-directory.php");
     exit(); // Ensure script termination after redirection
 }
 
 mysqli_close($conn);
-
 ?>

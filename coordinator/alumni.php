@@ -57,11 +57,9 @@
                                 </h2>
                             </div>
 
-
                             <table class="table table-responsive text-center table-striped overflow-auto">
                                 <!-- Your table header and styling -->
                                 <thead class="table-dark text-nowrap">
-                                    <th>Image</th>
                                     <th>Full Name</th>
                                     <th>Sex</th>
                                     <th>Course</th>
@@ -85,23 +83,6 @@
                                             while ($value = $result->fetch_assoc()) {
                                         ?>
                                     <tr class="align-middle text-nowrap">
-                                        <td>
-                                            <?php
-                                                        if (!empty($value['img'])) {
-                                                        ?>
-                                            <img src="../img/alumni/<?php echo $value['img']; ?>"
-                                                class="card-img-top rounded-circle object-fit-cover"
-                                                style="height: 50px; width:50px;">
-                                            <?php
-                                                        } else {
-                                                        ?>
-                                            <img src="../img/alumni/no-image.png"
-                                                class="card-img-top rounded-circle object-fit-cover"
-                                                style="height: 50px; width:50px;">
-                                            <?php
-                                                        }
-                                                        ?>
-                                        </td>
                                         <td>
                                             <?php echo $value['fname'] . " " . $value['mname'] . " " . $value['lname']  ?>
                                         </td>

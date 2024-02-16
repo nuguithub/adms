@@ -115,10 +115,15 @@
                                 
                                 $request .= " LIMIT $start_item, $itemsPerPage";
                                 $result = $conn->query($request);
-                                ?>
 
-                                <?php if ($result->num_rows > 0): ?>
-                                <?php foreach ($result as $value): ?>
+                                if ($result->num_rows > 0): 
+                                    foreach ($result as $value): 
+                                        if (($value['position'] === 'No info') && ($value['company'] === NULL)) {
+                                            $comp = 'No info';
+                                        } else {
+                                            $comp = $value['position'] .' at ' .$value['company'] . ', ' . $value['company_address'];
+                                        }
+                                ?>
                                 <tr class="align-middle">
                                     <td>
                                         <?php echo "<a href='profile.php?student_number=" . $value['student_number'] . "'>" . $value['student_number'] . "</a>";?>
@@ -137,7 +142,7 @@
                                 $age = date_diff(date_create($birthdate), date_create($currentDate))->y;
                                 echo $age; 
                             ?></td>
-                                    <td><?php echo $value['position']; ?></td>
+                                    <td><?php echo $comp; ?></td>
                                     <td><?php echo $value['empStat'] ?? '-'; ?></td>
                                     <td><?php echo $value['coll_dept']; ?></td>
                                     <td><?php echo $value['coll_course']; ?></td>

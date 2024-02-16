@@ -44,7 +44,7 @@ function isValidDateRange($start, $end)
     return (strtotime($start) <= strtotime($end)) && (strtotime($end) <= strtotime(date('Y-m-d')));
 }
 
-function updateWorkHistory($conn, $user_id, $curDate, $position, $empStat, $company, $workStart, $formattedWorkEnd)
+function updateWorkHistory($conn, $user_id, $curDate, $position, $company_address, $work_location, $empStat, $company, $workStart, $formattedWorkEnd)
 {
     if (empty($formattedWorkEnd)) {
         $formattedWorkEnd = 'Present';
@@ -76,7 +76,7 @@ function updateWorkHistory($conn, $user_id, $curDate, $position, $empStat, $comp
         $stmtUpdate->close();
     }
 
-    $addWorkQuery = "INSERT INTO workHistory (user_id, company, position, empStat, workStart, workEnd) VALUES (?, ?, ?, ?, ?, ?)";
+    $addWorkQuery = "INSERT INTO workHistory (user_id, company, company_address, work_location, position, empStat, workStart, workEnd) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmtInsert = $conn->prepare($addWorkQuery);
 
     // If the position is numeric, assume it's a career_id and fetch the career_name
@@ -90,7 +90,7 @@ function updateWorkHistory($conn, $user_id, $curDate, $position, $empStat, $comp
         $stmtCareer->close();
     }
 
-    $stmtInsert->bind_param("isssss", $user_id, $company, $position, $empStat, $workStart, $formattedWorkEnd);
+    $stmtInsert->bind_param("isssssss", $user_id, $company,  $company_address, $work_location, $position, $empStat, $workStart, $formattedWorkEnd);
 
     if ($stmtInsert->execute()) {
         $stmtInsert->close();
@@ -107,6 +107,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editWork"])) {
 
     $id = $_POST['id'];
     $company = escapeString($conn, $_POST['company']);
+    $company_address = escapeString($conn, $_POST['company_address']);
+    $work_location = escapeString($conn, $_POST['work_location']);
     $position = escapeString($conn, $_POST['position']);
     $empStat = escapeString($conn, $_POST['empStat']);
     $workStart = escapeString($conn, $_POST['workStart']);
@@ -173,7 +175,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editWork"])) {
                 $otherCareerName = getOtherCareerName($conn, $otherCareer, $coll_dept, $coll_course, $position);
         
                 if ($otherCareerName !== false) {
-                    if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $otherCareerName, $empStat, $company, $workStart, $workEnd)) {
+                    if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $otherCareerName, $company_address, $work_location, $empStat, $company, $workStart, $workEnd)) {
                         $_SESSION['workStatMess'] = ["Account updated successfully.", "success"];
                     } else {
                         $_SESSION['workStatMess'] = ["Failed to update account.", "danger"];
@@ -192,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editWork"])) {
                     // Check for blank workEnd to save as "Present"
                     $workEnd = empty($workEnd) ? 'Present' : $workEnd;
         
-                    if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $position, $empStat, $company, $workStart, $workEnd)) {
+                    if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $position, $company_address, $work_location, $empStat, $company, $workStart, $workEnd)) {
                         $_SESSION['workStatMess'] = ["Account updated successfully.", "success"];
                     } else {
                         $_SESSION['workStatMess'] = ["Failed to update account.", "danger"];

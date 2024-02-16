@@ -497,16 +497,18 @@ mysqli_close($conn);
                                     $workSpan = "Less than a month"; // Handle the case when the work span is less than a month
                                 }
 
-                                $company = $row['company'];
-                                $position = $row['position'];
-                                $empStat = $row['empStat'];
-                                $workId = $row['work_id'];
+                                $company = $row['company'] ?? '';
+                                $compAdd = $row['company_address'] ?? '';
+                                $position = $row['position'] ?? '';
+                                $empStat = $row['empStat'] ?? '';
+                                $workId = $row['work_id'] ?? '';
+                                
                         
                                 include 'updWork.php'; ?>
 
                             <div class="row">
                                 <div class="col-5 ps-lg-5 d-flex flex-column">
-                                    <p class="mb-0 fw-semibold"><?php echo $company; ?></p>
+                                    <p class="mb-0 fw-semibold"><?php echo $company .', '. $compAdd; ?></p>
                                     <p class="text-secondary" style="font-size: .85em;">
                                         <?php echo $position; ?> - <?php echo $empStat; ?></p>
                                 </div>

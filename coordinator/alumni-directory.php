@@ -75,46 +75,6 @@
                         }
                     ?>
 
-                    <?php
-                        // Check for errors and display a confirmation modal if needed
-                        if (isset($_SESSION['mess']) && !empty($_SESSION['mess'])) {
-                            echo '<script>
-                                    $(document).ready(function(){
-                                        $("#errorModal").modal("show");
-                                    });
-                                </script>';
-                        }
-                    ?>
-
-                    <!-- Add this modal at the end of your importExcel.php file -->
-                    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="errorModalLabel">Error During Upload</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <?php
-                                        foreach ($_SESSION['mess'] as $message) {
-                                            echo "<p>$message</p>";
-                                        }
-                                        // Clear error messages from the session
-                                        unset($_SESSION['mess']);
-                                    ?>
-                                    <p>Do you wish to continue?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                    <button type="submit" class="btn btn-primary" form="excelForm"
-                                        name="confirmUpload">Yes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="table-responsive">
                         <form method="GET" action="">
                             <div class="ms-auto col-lg-12">
@@ -188,7 +148,11 @@
 
                                 if ($result->num_rows > 0):
                                 foreach ($result as $value): 
-                                    
+                                    if (($value['position'] === 'No info') && ($value['company'] === NULL)) {
+                                        $comp = 'No info';
+                                    } else {
+                                        $comp = $value['position'] .' at ' .$value['company'] . ', ' . $value['company_address'];
+                                    }
                                 ?>
 
                                 <tr class="align-middle">
@@ -207,7 +171,8 @@
                                         echo $age; 
                                         ?>
                                     </td>
-                                    <td><?php echo $value['position']; ?></td>
+                                    <td><?php echo $comp; ?>
+                                    </td>
                                     <td><?php echo $value['empStat'] ?? '-'; ?></td>
                                     <td><?php echo $value['coll_dept']; ?></td>
                                     <td><?php echo $value['coll_course']; ?></td>
@@ -236,6 +201,20 @@
                         <?php include 'components/pagination.php';?>
 
                     </div>
+                    <?php
+                    // Check if session variables are set
+                    if (isset($_SESSION['failedData']) && isset($_SESSION['successData'])) {
+                        // Check if the number of failed records is greater than 0
+                        $numFailedData = count($_SESSION['failedData']);
+                        
+                        if ($numFailedData > 0) {
+                            include 'actions/errorUpload.php';
+                        }
+                    }
+
+                    // Unset the session variable for failedData
+                    unset($_SESSION['failedData']); 
+                    ?>
                 </div>
             </div>
         </div>
@@ -244,6 +223,13 @@
 
     <script src="../assets/sidebar.js"></script>
     <script src="../bootstrap/bs.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script>
+    // Show the modal when the page is loaded
+    $(document).ready(function() {
+        $('#errorModal').modal('show');
+    });
+    </script>
 
 </body>
 

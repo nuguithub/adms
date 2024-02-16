@@ -34,13 +34,26 @@
                     </div>
 
                     <div class="mb-2">
+                        <label for="work_location"><strong>Work Location</strong></label>
+                        <select class="form-select" aria-label="work_location" name="work_location" required>
+                            <option value="Local">Local</option>
+                            <option value="Foreign">Foreign</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="company_address"><strong>Company Address</strong> </label>
+                        <input type="text" name="company_address" class="form-control" required>
+                    </div>
+
+                    <div class="mb-2">
                         <label for="position"><strong>Position</strong></label>
                         <select class="form-select" aria-label="position" name="position" required>
                             <?php
                                 $selectedCareer = '';
                                 $otherOptionSelected = false;
 
-                                echo '<option>Select Career</option>';
+                                echo '<option value="">Select Career</option>';
                                 echo '<option value="Unemployed">Unemployed</option>';  
 
                                 $querySelect = "SELECT * FROM careers WHERE related = 'YES' AND department = '" . $row['coll_dept'] . "' AND course = '" . $row['coll_course'] . "'";

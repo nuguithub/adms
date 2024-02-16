@@ -22,7 +22,7 @@
         <div class="modal-content">
             <form action="save-work.php" method="post">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updWorkModalLabel_<?php echo $workId ?>">New Work</h5>
+                    <h5 class="modal-title" id="updWorkModalLabel_<?php echo $workId ?>">Edit Work</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-start">
@@ -33,6 +33,24 @@
                         <label for="company"><strong>Company</strong> </label>
                         <input type="text" name="company" class="form-control" value="<?php echo $workRow['company'];?>"
                             disabled>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="work_location"><strong>Work Location</strong></label>
+                        <select class="form-select" aria-label="work_location" name="work_location">
+                            <option value="Local"
+                                <?php echo ($workRow['work_location'] === 'Local') ? 'selected' : ''; ?>>Local</option>
+                            <option value="Foreign"
+                                <?php echo ($workRow['work_location'] === 'Foreign') ? 'selected' : ''; ?>>Foreign
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="company_address"><strong>Company Address</strong> </label>
+                        <input type="text" name="company_address" class="form-control"
+                            value="<?php echo $workRow['company_address'];?>" required>
                     </div>
 
                     <div class="mb-2">
@@ -50,35 +68,35 @@
                         <label for="empStat"><strong>Employment Status</strong></label>
                         <select class="form-select" aria-label="empStat" name="empStat" required>
                             <?php
-    $selectedEmpStat = htmlspecialchars($workRow['empStat']);
+                                $selectedEmpStat = htmlspecialchars($workRow['empStat']);
 
-    $customLabels = array(
-        "COS" => "Contact of Service",
-        "JO" => "Job Order",
-        "WO" => "Work Order"
-    );
+                                $customLabels = array(
+                                    "COS" => "Contact of Service",
+                                    "JO" => "Job Order",
+                                    "WO" => "Work Order"
+                                );
 
-    // Display the selected option as the first option
-    echo '<option value="' . $selectedEmpStat . '" selected>' . $selectedEmpStat . '</option>';
+                                // Display the selected option as the first option
+                                echo '<option value="' . $selectedEmpStat . '" selected>' . $selectedEmpStat . '</option>';
 
-    // Display the regular options
-    $empStatOptions = array("Permanent", "Temporary");
-    foreach ($empStatOptions as $option) {
-        // Skip the selected option, as it has already been displayed
-        if ($option !== $selectedEmpStat) {
-            echo '<option value="' . $option . '">' . $option . '</option>';
-        }
-    }
+                                // Display the regular options
+                                $empStatOptions = array("Permanent", "Temporary");
+                                foreach ($empStatOptions as $option) {
+                                    // Skip the selected option, as it has already been displayed
+                                    if ($option !== $selectedEmpStat) {
+                                        echo '<option value="' . $option . '">' . $option . '</option>';
+                                    }
+                                }
 
-    // Display the custom labeled options
-    foreach ($customLabels as $value => $label) {
-        // Skip the selected option, as it has already been displayed
-        if ($value !== $selectedEmpStat) {
-            $selected = ($value === $selectedEmpStat) ? 'selected' : '';
-            echo '<option value="' . $value . '" ' . $selected . '>' . $label . '</option>';
-        }
-    }
-    ?>
+                                // Display the custom labeled options
+                                foreach ($customLabels as $value => $label) {
+                                    // Skip the selected option, as it has already been displayed
+                                    if ($value !== $selectedEmpStat) {
+                                        $selected = ($value === $selectedEmpStat) ? 'selected' : '';
+                                        echo '<option value="' . $value . '" ' . $selected . '>' . $label . '</option>';
+                                    }
+                                }
+                                ?>
                         </select>
 
                     </div>

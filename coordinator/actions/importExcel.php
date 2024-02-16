@@ -32,7 +32,12 @@
                         <input type="file" class="form-control" id="excelFile" name="excelFile" accept=".xlsx, .xls"
                             hidden />
                     </label>
-                    <div id="excelInfo" class="text-center mt-3"></div>
+                    <div id="excelInfo" class="text-center my-3"></div>
+                    <div class="text-end" style="font-size: 0.78rem;">
+                        <strong>Note:</strong> <em>Please ensure that your file contains a maximum of 100 alumni data to
+                            prevent any potential errors during the import process.</em>
+                    </div>
+
                     <hr>
                     <div class="d-flex justify-content-end align-items-center">
                         <a type="button rounded-circle" class="text-decoration-none fw-bold me-3"

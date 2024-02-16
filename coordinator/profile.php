@@ -43,12 +43,25 @@ if(isset($_GET['student_number'])) {
     $workHistoryStmt = mysqli_prepare($conn, $workHistoryQuery);
 
     if ($workHistoryStmt && isset($alumniData['user_id'])) {
+        mysqli_stmt_bind_param($workHistoryStmt, "i", $alumniData['user_id']);
+        mysqli_stmt_execute($workHistoryStmt);
 
-        $currentWorkQuery = "SELECT position FROM workHistory WHERE workEnd = 'Present'";
-        $cwResult = $conn->query($currentWorkQuery);
+        $cwResult = mysqli_stmt_get_result($workHistoryStmt);
 
-        if ($row = $cwResult->fetch_assoc()) {
-            $currentWork = $row['position'];
+        $currentWorkQuery = "SELECT position FROM workHistory WHERE workEnd = 'Present' AND user_id = ?";
+        $currentWorkStmt = mysqli_prepare($conn, $currentWorkQuery);
+
+        if ($currentWorkStmt) {
+            mysqli_stmt_bind_param($currentWorkStmt, "i", $alumniData['user_id']);
+            mysqli_stmt_execute($currentWorkStmt);
+
+            $cwResult = mysqli_stmt_get_result($currentWorkStmt);
+
+            if ($row = mysqli_fetch_assoc($cwResult)) {
+                $currentWork = $row['position'];
+            }
+
+            mysqli_stmt_close($currentWorkStmt);
         }
 
         mysqli_stmt_close($workHistoryStmt);
@@ -167,7 +180,7 @@ if(isset($_GET['student_number'])) {
                                     $formattedWorkStart = date('Y M', strtotime($row['workStart']));
                                     $formattedWorkEnd = ($row['workEnd'] == 'Present') ? 'Present' : date('Y M', strtotime($row['workEnd']));
                                     echo '<h5>' . $formattedWorkStart . ' - ' . $formattedWorkEnd . '</h5>';
-                                    echo '<p><em>' . $row['company'] . '</em></p>';
+                                    echo '<p><em>' . $row['company'] . ', ' . $row['company_address'] .'</em></p>';
                                     echo '</div>';
                                 }
                             } else {

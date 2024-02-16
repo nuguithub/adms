@@ -3,6 +3,8 @@ session_start();
 include 'connectDB.php';
 
 if (isset($_POST['saveWorkx'])) {
+    $company_address = $_POST['company_address'];
+    $work_location = $_POST['work_location'];
     $workId = $_POST['id'];
     $empStat = $_POST['empStat'];
     $workStart = $_POST['workStart'];
@@ -21,11 +23,11 @@ if (isset($_POST['saveWorkx'])) {
     }
 
     // Use prepared statement for the UPDATE query
-    $sqlUpdateWork = "UPDATE workHistory SET empStat = ?, workStart = ?, workEnd = ? WHERE work_id = ?";
+    $sqlUpdateWork = "UPDATE workHistory SET company_address = ?, work_location = ?, empStat = ?, workStart = ?, workEnd = ? WHERE work_id = ?";
     $stmtUpdateWork = mysqli_prepare($conn, $sqlUpdateWork);
     
     if ($stmtUpdateWork) {
-        mysqli_stmt_bind_param($stmtUpdateWork, "sssi", $empStat, $workStart, $workEnd, $workId);
+        mysqli_stmt_bind_param($stmtUpdateWork, "sssssi", $company_address, $work_location, $empStat, $workStart, $workEnd, $workId);
 
         if (mysqli_stmt_execute($stmtUpdateWork)) {
             $_SESSION['workStatMess'] = ["Work information updated successfully.", "success"];
