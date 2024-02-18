@@ -9,7 +9,7 @@
                         <label class="form-label" for="departmentx">Select Department:</label>
                     </td>
                     <td>
-                        <select class="form-select" id="departmentx">
+                        <select class="form-select" id="departmentx" disabled>
                             <option value="">All Colleges</option>
                         </select>
                     </td>

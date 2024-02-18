@@ -9,7 +9,7 @@
                         <label class="form-label" for="department">Select College:</label>
                     </td>
                     <td>
-                        <select class="form-select" id="department">
+                        <select class="form-select" id="department" disabled>
                             <option value="">All College</option>
                         </select>
                     </td>
@@ -31,6 +31,26 @@
                     <td>
                         <select class="form-select" id="batch">
                             <option value="">All Batches</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="form-label" for="company">Select Company:</label>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" id="company" placeholder="All Company">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="form-label" for="work_location">Select Work Location:</label>
+                    </td>
+                    <td>
+                        <select class="form-select" id="work_location">
+                            <option value="">All Work Location</option>
+                            <option value="Local">Local</option>
+                            <option value="Foreign">Foreign</option>
                         </select>
                     </td>
                 </tr>
@@ -98,11 +118,12 @@ $(document).ready(function() {
     });
 });
 
-
 function getAlumniData() {
     var department = document.getElementById("department").value;
     var course = document.getElementById("course").value;
     var batch = document.getElementById("batch").value;
+    var company = document.getElementById("company").value;
+    var work_location = document.getElementById("work_location").value;
 
     $.ajax({
         type: "POST",
@@ -110,7 +131,9 @@ function getAlumniData() {
         data: {
             department: department,
             course: course,
-            batch: batch
+            batch: batch,
+            company: company,
+            work_location: work_location
         },
         success: function(response) {
             $("#result").html(response);

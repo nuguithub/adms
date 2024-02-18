@@ -1,4 +1,4 @@
-<div class="card overflow-auto shadow border-0 mb-5" style="background: #eee3;">
+<div class="card overflow-auto shadow border-0 my-3" style="background: #eee3;">
     <div class="mx-auto m-5" style="width: 80%;">
         <h3 class="fw-bold mb-3">No. of Graduates</h3>
 
@@ -34,6 +34,26 @@
                         </select>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="form-label" for="company">Select Company:</label>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" id="company" placeholder="All Company">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="form-label" for="work_location">Select Work Location:</label>
+                    </td>
+                    <td>
+                        <select class="form-select" id="work_location">
+                            <option value="">All Work Location</option>
+                            <option value="Local">Local</option>
+                            <option value="Foreign">Foreign</option>
+                        </select>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <button class="btn btn-sm btn-secondary px-3" onclick="getAlumniData()">Get Alumni Reports</button>
@@ -58,6 +78,20 @@ $(document).ready(function() {
             updateCoursesDropdown(selectedDepartment);
         }
     });
+
+    // Function to update the courses dropdown based on the selected department
+    function updateCoursesDropdown(selectedDepartment) {
+        $.ajax({
+            type: "GET",
+            url: "reports/getCourses.php",
+            data: {
+                department: selectedDepartment
+            },
+            success: function(data) {
+                $("#course").html(data);
+            }
+        });
+    }
 
     // Fetch and populate batches
     $.ajax({
@@ -84,24 +118,12 @@ $(document).ready(function() {
     });
 });
 
-// Function to update the courses dropdown based on the selected department
-function updateCoursesDropdown(selectedDepartment) {
-    $.ajax({
-        type: "GET",
-        url: "reports/getCourses.php",
-        data: {
-            department: selectedDepartment
-        },
-        success: function(data) {
-            $("#course").html(data);
-        }
-    });
-}
-
 function getAlumniData() {
     var department = document.getElementById("department").value;
     var course = document.getElementById("course").value;
     var batch = document.getElementById("batch").value;
+    var company = document.getElementById("company").value;
+    var work_location = document.getElementById("work_location").value;
 
     $.ajax({
         type: "POST",
@@ -109,7 +131,9 @@ function getAlumniData() {
         data: {
             department: department,
             course: course,
-            batch: batch
+            batch: batch,
+            company: company,
+            work_location: work_location
         },
         success: function(response) {
             $("#result").html(response);
