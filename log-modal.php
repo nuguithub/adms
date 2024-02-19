@@ -106,7 +106,7 @@ function validateLoginForm() {
                 } else if (response.role_ === "alumni") {
                     if (response.approved === "approved") {
                         setTimeout(function() {
-                            window.location.href = "alum-dashboard.php";
+                            window.location.href = "profile.php";
                         }, 500);
                     } else {
                         errorMessage.textContent = "Your account is not yet approved by the coordinator";

@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($stmt->affected_rows > 0) {
             $mail = require __DIR__ . "/mailer.php";
     
-            $mail->setFrom("alfred.nuguit@cvsu.edu.ph");
+            $mail->setFrom("email@noreply.com");
             $mail->addAddress($email);
             $mail->Subject = "Password Reset";
             $mail->Body = <<<END
