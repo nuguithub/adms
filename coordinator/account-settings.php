@@ -10,13 +10,13 @@
     <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
-    #nav-list li:nth-child(5) a {
+    #nav-list li:nth-child(7) a {
         background-color: var(--color-white);
         border-radius: 5px;
     }
 
-    #nav-list li:nth-child(5) a i,
-    #nav-list li:nth-child(5) a span {
+    #nav-list li:nth-child(7) a i,
+    #nav-list li:nth-child(7) a span {
         color: var(--color-default);
     }
 

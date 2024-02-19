@@ -92,7 +92,8 @@
                                             LEFT JOIN alumni_program ap ON a.alumni_id = ap.alumni_id
                                             LEFT JOIN departments d ON ap.coll_dept = d.dept_code
                                             LEFT JOIN courses c ON ap.coll_course = c.course_code
-                                            LEFT JOIN workHistory wh ON a.user_id = wh.user_id";
+                                            LEFT JOIN workHistory wh ON a.user_id = wh.user_id
+                                            WHERE archive IS NULL";
                                 
                                 if (!empty($searchQuery)) {
                                     $searchConditions = [];
@@ -101,7 +102,7 @@
                                     
                                     $searchCondition = implode(' OR ', $searchConditions);
                                     
-                                    $request .= " WHERE ($searchCondition)";
+                                    $request .= " AND ($searchCondition)";
                                 }
                                 $request .= " GROUP BY a.alumni_id";
                                                                 

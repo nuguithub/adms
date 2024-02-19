@@ -53,7 +53,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         AND a.fname = ? 
                                         AND a.lname = ? 
                                         AND ap.coll_dept = ? 
-                                        AND ap.coll_course = ?");
+                                        AND ap.coll_course = ?
+                                        AND archive IS NULL");
 
         mysqli_stmt_bind_param($validationQuery, "sssss", $studentNumber, $fname, $lname, $selectedDepartment, $selectedCourse);
         mysqli_stmt_execute($validationQuery);

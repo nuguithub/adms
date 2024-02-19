@@ -48,10 +48,19 @@ if ($_SESSION['role_'] === "college_coordinator") {
                 $row = mysqli_fetch_assoc($result);
                 $pendingCount = $row['pending_count'];
             } 
-            // else {
-            //     // Handle the case where there's an error in the query
-            //     echo "Error: " . mysqli_error($conn);
-            // }
+
+            $archiveQuery = "SELECT COUNT(*) AS archive_count 
+                        FROM alumni
+                        WHERE archive IS NOT NULL";
+
+            $arcRes = mysqli_query($conn, $archiveQuery);
+
+            $archiveCount = 0;
+            if ($arcRes) {
+                $row = mysqli_fetch_assoc($arcRes);
+                $archiveCount = $row['archive_count'];
+            } 
+        
             ?>
         <li>
             <a class="position-relative" href="alumni.php">
@@ -79,6 +88,19 @@ if ($_SESSION['role_'] === "college_coordinator") {
                 <span class="link_name">Reports</span>
             </a>
             <span class="tooltip">Reports</span>
+        </li>
+        <li>
+            <a class="position-relative" href="archive.php">
+                <i class="far fa-archive"></i>
+                <span class="link_name">Archive</span>
+                <?php if ($archiveCount > 0) : ?>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <?php echo $archiveCount; ?>
+                    <span class="visually-hidden">Archived Alumni</span>
+                </span>
+                <?php endif; ?>
+            </a>
+            <span class="tooltip">Archive</span>
         </li>
         <li>
             <a href="account-settings.php">
