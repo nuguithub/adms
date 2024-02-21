@@ -33,7 +33,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadows-nav sticky-top">
     <div class="container p-4">
         <a class="navbar-brand" href="dashboard.php#"><i class="icon fas fa-house-user me-3"></i>Alumni Manager</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

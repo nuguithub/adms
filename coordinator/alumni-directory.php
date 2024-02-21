@@ -230,6 +230,24 @@
         $('#errorModal').modal('show');
     });
     </script>
+    <script>
+    const excelFileInput = document.getElementById('excelFile');
+    const excelInfo = document.getElementById('excelInfo');
+    const submitButton = document.getElementById('submit');
+
+    excelFileInput.addEventListener('change', function() {
+        const fileName = excelFileInput.value.split('\\').pop();
+        if (fileName) {
+            excelInfo.innerHTML = `<strong>Selected Excel File:</strong> ${fileName}`;
+            excelInfo.classList.remove('d-none');
+            submitButton.classList.remove('disabled');
+        } else {
+            excelInfo.textContent = '';
+            excelInfo.classList.add('d-none');
+            submitButton.classList.add('disabled');
+        }
+    });
+    </script>
 
 </body>
 

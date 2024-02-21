@@ -1,76 +1,3 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once '../connectDB.php'; 
-
-$deptQuery = "SELECT dept_name FROM departments WHERE dept_code = ?";
-$stmtx = $conn->prepare($deptQuery);
-$stmtx->bind_param("s", $college);
-$stmtx->execute();
-$stmtx->bind_result($deptName);
-$stmtx->fetch();
-$stmtx->close();
-
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['addAlumni'])) {
-    $student_number = $_POST["studentNumber"];
-    $fname = ucwords(strtolower($_POST["fname"]));
-    $mname = ucwords(strtolower($_POST["mname"]));
-    $lname = ucwords(strtolower($_POST["lname"]));
-    $gender = $_POST["gender"];
-    $civil_status = $_POST["civil_status"];
-    $birthday = $_POST["birthday"];
-    $address = $_POST["address"];
-    $department = $_POST["department"];
-    $course = $_POST["course"];
-    $batch = $_POST["batch"];
-
-    // Check if any of the required fields are empty
-    if (empty($student_number) || empty($fname) || empty($lname) || empty($gender) || empty($civil_status) || empty($birthday) || empty($department) || empty($course) || empty($batch)) {
-        $message = "All fields are required.";
-    } else {
-
-        // Proceed with the database operations
-        $checkQuery = "SELECT student_number FROM alumni WHERE student_number = ?";
-        $checkStmt = $conn->prepare($checkQuery);
-        $checkStmt->bind_param("s", $student_number);
-        $checkStmt->execute();
-        $checkResult = $checkStmt->get_result();
-
-        if ($checkResult->num_rows > 0) {
-            $_SESSION['updAlumniMess'] = ["A student with the same student number already exists.", "warning"];
-        } else {
-                
-            $addAlumniQuery = "INSERT INTO alumni (student_number, fname, mname, lname, gender, civil_status, birthday, address_) 
-                            VALUES ('$student_number', '$fname', '$mname', '$lname', '$gender', '$civil_status', '$birthday', '$address')";
-            $alumniInsertResult = mysqli_query($conn, $addAlumniQuery);
-                
-            if ($alumniInsertResult) {
-            $lastInsertedId = mysqli_insert_id($conn);
-                
-                $insertProgramQuery = "INSERT INTO alumni_program (alumni_id, coll_dept, coll_course, batch) 
-                                    VALUES ('$lastInsertedId', '$college', '$course', '$batch')";
-                $programInsertResult = mysqli_query($conn, $insertProgramQuery);
-                
-                if ($programInsertResult) {
-                    $_SESSION['updAlumniMess'] = ["Alumni record added successfully.", "success"];
-                } else {
-                    $_SESSION['updAlumniMess'] = ["Failed to add program information.", "danger"];
-                }
-                
-            } else {
-                $_SESSION['updAlumniMess'] = ["Failed to add alumni record.", "danger"];
-            }
-        }
-        
-    }
-}
-
-
-?>
-
 <div class="modal fade" id="addAlumniModal" tabindex="-1" aria-labelledby="addAlumniModalLabel" aria-hidden="true"
     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog">
@@ -79,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['addAlumni'])) {
                 <h5 class="modal-title" id="addAlumniModalLabel"><strong>Add Alumni</strong></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="POST">
+            <form method="POST" action="actions/addAlumni.php">
                 <div class="modal-body">
                     <div id="error-message" class="alert alert-danger w-100 d-none" style="font-size: 14px;"></div>
 
@@ -154,7 +81,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['addAlumni'])) {
 
                     <div class="mb-1">
                         <label for="department" class="form-label fw-semibold mb-0">Department</label>
-                        <select class="form-select" name="department">
+                        <select class="form-select" name="department" disabled>
+                            <?php
+                            $deptQuery = "SELECT dept_name FROM departments WHERE dept_code = ?";
+                            $stmtx = $conn->prepare($deptQuery);
+                            $stmtx->bind_param("s", $college);
+                            $stmtx->execute();
+                            $stmtx->bind_result($deptName);
+                            $stmtx->fetch();
+                            $stmtx->close();
+                            ?>
                             <option value="<?php echo $college;?>" selected><?php echo $college .' - '. $deptName;?>
                         </select>
                     </div>
@@ -164,6 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['addAlumni'])) {
                         <select class="form-select" name="course" required>
                             <option selected value="">Select Course</option>
                             <?php 
+                            
                                 $CoursesQuery = mysqli_query($conn, "SELECT courses.*, departments.* 
                                         FROM courses 
                                         INNER JOIN departments ON courses.department_id = departments.dept_id
