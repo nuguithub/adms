@@ -10,20 +10,24 @@
                 <div class="alert alert-danger" role="alert">
                     <div id="failedRecords" style="font-size: .8rem; max-height: 8rem; overflow-y: auto;">
                         <?php
-        // Check if session variable is set and not empty
-        if (isset($_SESSION['failedData']) && !empty($_SESSION['failedData'])) {
-            // Display the first 5 failed records
-            for ($i = 0; $i < min(5, count($_SESSION['failedData'])); $i++) {
-                echo $_SESSION['failedData'][$i] . "<br>";
-            }
-        }
-        ?>
+                            // Check if session variable is set and not empty
+                            if (isset($_SESSION['failedData']) && !empty($_SESSION['failedData'])) {
+                                // Display the first 5 failed records
+                                for ($i = 0; $i < min(5, count($_SESSION['failedData'])); $i++) {
+                                    echo $_SESSION['failedData'][$i] . "<br>";
+                                }
+                            
+                            ?>
                     </div>
                     <div class="text-end">
+                        <?php 
+                            if (count($_SESSION['failedData']) > 5) {
+                        ?>
                         <a href="javascript:void(0);" id="seeMoreLink" onclick="showAllFailedRecords()"><em>See
                                 more</em></a>
                         <a href="javascript:void(0);" id="seeLess" onclick="hideExtraFailedRecords()"
                             style="display: none;"><em>See less</em></a>
+                        <?php } } ?>
                     </div>
                 </div>
                 <p class="m-0">Do you wish to continue?</p>

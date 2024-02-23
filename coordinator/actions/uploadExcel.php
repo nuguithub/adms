@@ -23,7 +23,12 @@ $_SESSION['successData'] = []; // Initialize the variable for successful data
 $_SESSION['failedData'] = []; // Initialize the variable for failed data
 
 // Function to process Excel data
+
 function processExcelData($row, $conn, $college) {
+    // Extract only the first 11 columns
+    $row = array_slice($row, 0, 11);
+
+    // Now you can access the values in $row as if there are only 11 columns
     $student_number = $row[0];
     $first_name = ucwords(strtolower($row[1]));
     $middle_name = ucwords(strtolower($row[2]));
@@ -112,11 +117,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['importExcel'])) {
 
     $excelRowCount = countExcelRows($_FILES['excelFile']['tmp_name']);
 
-            if ($excelRowCount > 100) {
-                $_SESSION['updAlumniMess'] = ["Excel file contains more than 100 rows. Importing limited to 100 rows.", "danger"];
-                header("Location: ../alumni-directory.php");
-                exit(); // Ensure script termination after redirection
-            }
+    if ($excelRowCount > 100) {
+        $_SESSION['updAlumniMess'] = ["Excel file contains more than 100 rows. Importing limited to 100 rows.", "danger"];
+        header("Location: ../alumni-directory.php");
+        exit(); // Ensure script termination after redirection
+    }
 
     if (!empty($_FILES['excelFile']['name']) && in_array($_FILES['excelFile']['type'], $validExcelMimes)) {
         if (is_uploaded_file($_FILES['excelFile']['tmp_name'])) {

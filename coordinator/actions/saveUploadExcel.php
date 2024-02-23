@@ -36,9 +36,9 @@ foreach ($_SESSION['successData'] as $data) {
 
 // Clear the success data session
 unset($_SESSION['successData']);
+mysqli_close($conn);
+
 $_SESSION['updAlumniMess'] = ["Importing file successfully", "success"];
 header("Location: ../alumni-directory.php");
 exit(); // Ensure script termination after redirection
-
-mysqli_close($conn);
 ?>

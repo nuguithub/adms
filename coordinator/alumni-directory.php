@@ -206,15 +206,22 @@
                     if (isset($_SESSION['failedData']) && isset($_SESSION['successData'])) {
                         // Check if the number of failed records is greater than 0
                         $numFailedData = count($_SESSION['failedData']);
-                        
+
                         if ($numFailedData > 0) {
                             include 'actions/errorUpload.php';
+                        } elseif (!empty($_SESSION['successData'])) {
+                            // Unset the session variable for failedData
+                            unset($_SESSION['failedData']);
+                            
+                            // Proceed to saveUploadExcel.php
+                            echo "<script>window.location.href = 'actions/saveUploadExcel.php'</script>";
+                            exit();
                         }
                     }
-
                     // Unset the session variable for failedData
-                    unset($_SESSION['failedData']); 
+                    unset($_SESSION['failedData']);
                     ?>
+
                 </div>
             </div>
         </div>
