@@ -1,6 +1,4 @@
 <?php
-    include 'connectDB.php';
-
     $sqlWork = "SELECT a.alumni_id, wh.*, ap.coll_dept, ap.coll_course
     FROM workHistory wh
     LEFT JOIN alumni a ON wh.user_id = a.user_id

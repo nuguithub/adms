@@ -22,6 +22,7 @@ else {
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Announcements</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.png">
     <link rel="stylesheet" href="bootstrap/bs.css">
     <link rel="stylesheet" href="assets/dashboard.css">
     <link

@@ -41,7 +41,7 @@ function getOtherCareerName($conn, $otherCareer, $coll_dept, $coll_course, $posi
 function isValidDateRange($start, $end)
 {
     // Check if $end date is later than $start date
-    return (strtotime($start) <= strtotime($end)) && (strtotime($end) <= strtotime(date('Y-m-d')));
+    return (strtotime($start) > strtotime($end) || strtotime($end) > strtotime(date('Y-m-d')));
 }
 
 function updateWorkHistory($conn, $user_id, $curDate, $position, $company_address, $work_location, $empStat, $company, $workStart, $formattedWorkEnd)
@@ -145,7 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editWork"])) {
                     $otherCareerName = getOtherCareerName($conn, $otherCareer, $coll_dept, $coll_course, $position);
             
                     if ($otherCareerName !== false) {
-                        if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $otherCareerName, $empStat, $company, $workStart, $workEnd)) {
+                        if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $otherCareerName, $company_address, $work_location, $empStat, $company, $workStart, $workEnd)) {
                             $_SESSION['workStatMess'] = ["Account updated successfully.", "success"];
                         } else {
                             $_SESSION['workStatMess'] = ["Failed to update account.", "danger"];
@@ -162,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["editWork"])) {
                         // Check for blank workEnd to save as "Present"
                         $workEnd = empty($workEnd) ? 'Present' : $workEnd;
             
-                        if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $position, $empStat, $company, $workStart, $workEnd)) {
+                        if (updateWorkHistory($conn, $user_id, DATE('Y-m'), $position, $company_address, $work_location, $empStat, $company, $workStart, $workEnd)) {
                             $_SESSION['workStatMess'] = ["Account updated successfully.", "success"];
                         } else {
                             $_SESSION['workStatMess'] = ["Failed to update account.", "danger"];

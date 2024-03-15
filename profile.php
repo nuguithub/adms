@@ -78,6 +78,7 @@ mysqli_close($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.png">
     <link rel="stylesheet" href="bootstrap/bs.css">
     <link rel="stylesheet" href="assets/dashboard.css">
     <link
@@ -235,8 +236,6 @@ mysqli_close($conn);
                             $course = $rowx['course_name'];
                             $batch = $rowx['batch'];
                             // Display information for each program
-
-                        
                     ?>
                     <hr class="mx-3 my-1">
                     <p class="mb-0 fw-bold">Programme: <span class="text-secondary"
@@ -249,26 +248,46 @@ mysqli_close($conn);
                         echo '<p class="text-secondary">No programs found for the alumni.</p>';
                     }
 
-                    
-                    if(!empty($achievements)){?>
+                    if (!empty($achievements)) { ?>
                     <hr class="mx-3 my-1">
                     <p class="mb-0 fw-bold">Achievements</p>
 
-                    <?php
-                        $queAch = "SELECT * FROM achievements WHERE alumni_id = '$alumId'";
-                        $resultAch = mysqli_query($conn, $queAch);
-                        echo '<ul class="">';
-                            
-                        while ($achieveRow = mysqli_fetch_assoc($resultAch)) {
-                            $achieveValue = empty($achieveRow['achievement']) ? 'No data available' : $achieveRow['achievement'];
-                            $dateAcq = date('F, Y', strtotime($achieveRow['date']));
-                            $dateValue = empty($dateAcq) ? '' : ' (' . $dateAcq . ')';
-                            echo '<li class="text-secondary" style="font-size: 16px;">' . $achieveValue . $dateValue . '</li>';
-                        }
+                    <div id="hovMe">
+                        <ul class="">
+                            <?php
+                                $queAch = "SELECT * FROM achievements WHERE alumni_id = '$alumId'";
+                                $resultAch = mysqli_query($conn, $queAch);
+                                while ($achieveRow = mysqli_fetch_assoc($resultAch)) {
+                                    $achID = $achieveRow['id'];
+                                    $achieveValue = empty($achieveRow['achievement']) ? 'No data available' : $achieveRow['achievement'];
+                                    if (strlen($achieveValue) > 8) {
+                                        $achieveValue = substr($achieveValue, 0, 5) . '...';
+                                    }
+                                    $org = empty($achieveRow['org']) ? 'No data available' : $achieveRow['org'];
+                                    if (strlen($org) > 8) {
+                                        $org = substr($org, 0, 5) . '...';
+                                    }
+                                    $dateAcq = date('M d, Y', strtotime($achieveRow['date']));
+                                    $dateValue = empty($dateAcq) ? '' : ' (' . $dateAcq . ')';
+                                    ?>
 
-                        echo '</ul>';
-                    }
-                    ?>
+                            <li id="hovMe" class="text-secondary" style="font-size: 16px;">
+                                <?php echo $achieveValue .', '. $org. $dateValue; ?>
+                            </li>
+                            <span class="ms-auto" id="hovThis">
+                                <a href="#updAchModal_<?php echo $achID ?>"
+                                    class="pe-2 link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                    data-bs-toggle="modal" data-bs-backdrop="false" style="font-size: .8em;">Edit</a>
+                                <a class="pe-lg-5 link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                    href="delAch.php?id=<?php echo $achID ?>" style="font-size: .8em;"
+                                    onclick="return confirm('Are you sure you want to delete this?');">Delete</a>
+                            </span>
+                            <?php include 'updAch.php'; ?>
+                            <?php } ?>
+                        </ul>
+                    </div>
+                    <?php } ?>
+
                 </div>
 
                 <!-- CONTACTS -->

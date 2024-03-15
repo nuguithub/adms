@@ -6,19 +6,17 @@ $department = $_POST['department'];
 $course = $_POST['course'];
 $batch = $_POST['batch'];
 $company = $_POST['company'];
-$work_location = $_POST['work_location'];
 
 $sql = "SELECT 
-        alumni.student_number, 
-        alumni.fname, 
-        alumni.lname, 
-        alumni.gender,
+        CONCAT(alumni.fname, ' ', alumni.lname) AS name,
         COALESCE(w.position, 'No info') AS position,
         COALESCE(w.company, 'No info') AS company,
-        COALESCE(w.work_location, 'No info') AS work_location,
-        alumni_program.coll_dept, 
-        alumni_program.coll_course, 
-        alumni_program.batch 
+        COALESCE(w.workStart, 'No info') AS workStart,
+        COALESCE(w.empStat, 'No info') AS empStat,
+        alumni_program.batch,
+        alumni_program.coll_course,
+        alumni.contact_no,
+        alumni.email
         FROM  
             alumni_program 
         INNER JOIN  
@@ -28,7 +26,8 @@ $sql = "SELECT
                 user_id,
                 MAX(CASE WHEN workEnd = 'Present' THEN position END) AS position,
                 MAX(CASE WHEN workEnd = 'Present' THEN company END) AS company,
-                MAX(CASE WHEN workEnd = 'Present' THEN work_location END) AS work_location
+                MAX(CASE WHEN workEnd = 'Present' THEN workStart END) AS workStart,
+                MAX(CASE WHEN workEnd = 'Present' THEN empStat END) AS empStat
             FROM 
                 workHistory
             WHERE 
@@ -36,7 +35,7 @@ $sql = "SELECT
             GROUP BY 
                 user_id
         ) AS w ON alumni.user_id = w.user_id
-        WHERE 1=1";  
+        WHERE alumni.archive IS NULL";  
 
 $params = array();
 
@@ -67,11 +66,6 @@ if (!empty($company)) {
     }
 }
 
-if (!empty($work_location)) {
-    $sql .= " AND w.work_location = ?";
-    $params[] = $work_location;
-}
-
 $sql .= " GROUP BY student_number ";
 
 $stmt = mysqli_prepare($conn, $sql);
@@ -87,44 +81,56 @@ if ($stmt) {
 
     $result = mysqli_stmt_get_result($stmt);
 
-    // Create a PhpSpreadsheet instance
-    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
+    // Load existing Excel file
+    $excelFileName = "alumni_data_report.xlsx";
+    $excelPath = "../excelFiles/";
 
-    // Add headers to the Excel file
-    $headers = array("Student Number", "First Name", "Last Name", "Sex", "Position", "Company", "Work Location", "College", "Course", "Year Graduated");
-    $sheet->fromArray([$headers], null, 'A1');
+    $existingFilePath = "{$excelPath}{$excelFileName}";
 
-    $rowNumber = 2;
-    $totalRows = 0;
-    while ($row = mysqli_fetch_assoc($result)) {
-        $sheet->fromArray([$row], null, 'A' . $rowNumber);
-        $rowNumber++;
-        $totalRows++;
+    if (file_exists($existingFilePath)) {
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($existingFilePath);
+    } else {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     }
 
-    // Output download link if there is data
-    if ($totalRows > 0) {
-        $excelFileName = "alumni_data_report.xlsx";
-        $excelPath = "../excelFiles/";
+    $sheet = $spreadsheet->getActiveSheet();
 
-        $existingFilePath = "{$excelPath}{$excelFileName}";
+    // Clear existing data starting from row 18
+    $highestRow = $sheet->getHighestRow();
+    if ($highestRow >= 18) {
+        $sheet->removeRow(18, $highestRow - 17);
+    }
 
-        if (file_exists($existingFilePath)) {
-            // Attempt to delete the existing file
-            if (unlink($existingFilePath)) {
-                // echo "Old Excel file removed successfully.";
-            } 
-        }
+    // Add new data starting from row 18
+    $rowNumber = 18;
+    while ($row = mysqli_fetch_assoc($result)) {
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $writer->save($existingFilePath);
-
+        $row['position'] = ucwords($row['position']);
+        $row['company'] = ucwords($row['company']);
+        $row['email'] = strtolower($row['email']);
+        $row['contact_no'] = (string) $row['contact_no'];
+        $sheet->setCellValueExplicit("G$rowNumber", $row['contact_no'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    
         
+        if ($row['workStart'] != 'No info') {
+            $row['workStart'] = date("F Y",strtotime($row['workStart']));
+        }
+        
+        $sheet->fromArray([$row], null, 'A' . $rowNumber);
+        $rowNumber++;
+    }
+
+    // Save the modified Excel file
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+    $writer->save($existingFilePath);
+
+    $totalRows = $rowNumber - 18; // Calculate the total number of added rows
+
+    if ($totalRows > 0) {
         echo "<hr><p class='fw-bolder text-center mt-5 py-2 bg-black text-light'>Total Number: <span class='fw-normal px-5'>$totalRows</span></p>";
         echo "<div class='d-flex justify-content-end'><a class='btn btn-success btn-sm px-3' href='excelFiles/{$excelFileName}' download>Download Excel</a></div>";
     } else {
-        echo "<p class='text-center mt-3'>No data available for the selected criteria.</p>";
+        echo "<p class='text-center mt-3'>No new data available for the selected criteria.</p>";
     }
 
     // Close the prepared statement

@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alumni Approval</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.png">
     <link rel="stylesheet" href="../bootstrap/bs.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
     <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet" />

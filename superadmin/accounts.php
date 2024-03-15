@@ -23,6 +23,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Coordinator</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.png">
     <link rel="stylesheet" href="../bootstrap/bs.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
     <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet" />
@@ -99,6 +100,20 @@
 
                         <div class="row mx-5">
                             <div class="table-responsive">
+
+                                <div class="col-12 col-lg-10 mx-auto">
+                                    <div class="form-floating">
+                                        <select id="filterUserType" class="form-select mb-3">
+                                            <option value="all">All</option>
+                                            <option value="alumni">Alumni</option>
+                                            <option value="alumni_admin">Alumni Admin</option>
+                                            <option value="college_coordinator">College Coordinator</option>
+                                        </select>
+                                        <label for="floatingSelect">User Type</label>
+                                    </div>
+                                </div>
+
+
                                 <table class="table" id="user-lists">
                                     <thead>
                                         <?php
@@ -137,8 +152,7 @@
 
                                                     <script>
                                                     function confirmDelete() {
-                                                        return confirm(
-                                                            "Are you sure you want to delete this account?");
+                                                        return confirm("Are you sure you want to delete this account?");
                                                     }
                                                     </script>
                                                 </div>
@@ -152,6 +166,30 @@
                                         ?>
                                     </tbody>
                                 </table>
+
+                                <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const filterUserType = document.getElementById("filterUserType");
+                                    const tableRows = document.querySelectorAll("#user-lists tbody tr");
+
+                                    filterUserType.addEventListener("change", function() {
+                                        const selectedUserType = filterUserType.value;
+
+                                        tableRows.forEach(row => {
+                                            const userTypeCell = row.querySelector(
+                                                "td:nth-child(2)").textContent.toLowerCase();
+
+                                            if (selectedUserType === "all" || userTypeCell ===
+                                                selectedUserType.replace('_', ' ')) {
+                                                row.style.display = "";
+                                            } else {
+                                                row.style.display = "none";
+                                            }
+                                        });
+                                    });
+                                });
+                                </script>
+
                             </div>
                         </div>
 

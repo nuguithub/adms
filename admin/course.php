@@ -26,6 +26,7 @@ include '../connectDB.php';
     <meta http-equiv="X-UA-Compatible" course_name="IE=edge">
     <meta name="viewport" course_name="width=device-width, initial-scale=1.0">
     <title>Manage Courses</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.png">
     <link rel="stylesheet" href="../bootstrap/bs.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
     <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet" />
@@ -63,7 +64,7 @@ include '../connectDB.php';
                         <div class="mt-5 mx-5">
                             <h2 class="fw-bolder mb-3">Courses </h2>
                             <div class="text-end">
-                                <a href="department.php" class="btn btn-warning px-3">Go to Departments</a>
+                                <a href="department.php" class="btn btn-warning px-3">Go to Colleges</a>
                                 <button type="button" class="btn btn-success px-3" data-bs-toggle="modal"
                                     data-bs-target="#addCourseModal">Add Course</button>
                                 <?php include 'actions/add_course.php';?>

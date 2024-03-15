@@ -14,8 +14,13 @@
                     <input type="hidden" name="id" value="<?php echo $alumId; ?>" />
 
                     <div class="mb-2">
-                        <label for="achievement"><strong>Achievement</strong> </label>
+                        <label for="achievement"><strong>Achievement/Award</strong> </label>
                         <input type="text" name="achievement" class="form-control" required>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="achievement"><strong>Awarding Body</strong> </label>
+                        <input type="text" name="org" class="form-control" required>
                     </div>
 
                     <div class="mb-2">

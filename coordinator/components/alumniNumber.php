@@ -42,18 +42,6 @@
                         <input type="text" class="form-control" id="company" placeholder="All Company">
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <label class="form-label" for="work_location">Select Work Location:</label>
-                    </td>
-                    <td>
-                        <select class="form-select" id="work_location">
-                            <option value="">All Work Location</option>
-                            <option value="Local">Local</option>
-                            <option value="Foreign">Foreign</option>
-                        </select>
-                    </td>
-                </tr>
             </tbody>
         </table>
         <button class="btn btn-sm btn-secondary px-3" onclick="getAlumniData()">Get Alumni Reports</button>
@@ -123,7 +111,6 @@ function getAlumniData() {
     var course = document.getElementById("course").value;
     var batch = document.getElementById("batch").value;
     var company = document.getElementById("company").value;
-    var work_location = document.getElementById("work_location").value;
 
     $.ajax({
         type: "POST",
@@ -132,8 +119,7 @@ function getAlumniData() {
             department: department,
             course: course,
             batch: batch,
-            company: company,
-            work_location: work_location
+            company: company
         },
         success: function(response) {
             $("#result").html(response);

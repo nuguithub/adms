@@ -74,6 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <head>
     <title>Reset Password</title>
+    <link rel="icon" type="image/x-icon" href="../../img/favicon.png">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../../bootstrap/bs.css">
     <link rel="stylesheet" href="../dashboard.css">

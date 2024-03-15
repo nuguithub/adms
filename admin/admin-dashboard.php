@@ -3,6 +3,7 @@
 
 <head>
     <title>Loading Page</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.png">
     <link rel="stylesheet">
     <style>
     body {

@@ -22,7 +22,8 @@ include '../connectDB.php';
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Departments</title>
+    <title>Manage Colleges</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.png">
     <link rel="stylesheet" href="../bootstrap/bs.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
     <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet" />
@@ -58,11 +59,11 @@ include '../connectDB.php';
                 <div class="card m-3" style="background: #ccc; border: none;">
                     <div class="card-body overflow-auto" style="max-height: 90vh;">
                         <div class="mt-5 mx-5">
-                            <h2 class="fw-bolder mb-3"> Departments </h2>
+                            <h2 class="fw-bolder mb-3"> Colleges </h2>
                             <div class="text-end">
                                 <a href="course.php" class="btn btn-warning px-3">Go to Course</a>
                                 <button type="button" class="btn btn-success px-3" data-bs-toggle="modal"
-                                    data-bs-target="#addDeptModal">Add Department</button>
+                                    data-bs-target="#addDeptModal">Add College</button>
                                 <?php include 'actions/add_dept.php';?>
                             </div>
                             <hr>
@@ -90,8 +91,8 @@ include '../connectDB.php';
                                             if ($resultx->num_rows > 0) { ?>
                                         <thead class="text-nowrap">
                                             <tr class="h6 text-center">
-                                                <th>Department Code</th>
-                                                <th>Department Name</th>
+                                                <th>College Dept. Code</th>
+                                                <th>College Dept. Name</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>

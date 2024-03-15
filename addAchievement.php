@@ -2,7 +2,7 @@
 session_start();
 require_once 'connectDB.php';
 
-function updateAccount($id, $achievement, $date)
+function updateAccount($id, $achievement, $org, $date)
 {
     global $conn;
 
@@ -37,7 +37,7 @@ function updateAccount($id, $achievement, $date)
     $achievement = mysqli_real_escape_string($conn, $achievement);
     $date = mysqli_real_escape_string($conn, $date);
 
-    $query = "INSERT INTO achievements (alumni_id, achievement, date) VALUES ('$id', '$achievement', '$date')";
+    $query = "INSERT INTO achievements (alumni_id, achievement, org, date) VALUES ('$id', '$achievement', '$org', '$date')";
 
     if (mysqli_query($conn, $query)) {
         return true; // Return true if the insertion was successful
@@ -52,9 +52,10 @@ function updateAccount($id, $achievement, $date)
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["addAchievement"])) {
     $id = $_POST['id'];
     $achievement = $_POST['achievement'];
+    $org = $_POST['org'];
     $date = $_POST['date'];
 
-    if (updateAccount($id, $achievement, $date)) {
+    if (updateAccount($id, $achievement, $org, $date)) {
         $_SESSION['educStat'] = ["Achievement added successfully.", "success"];
     } 
 }
